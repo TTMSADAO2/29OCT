@@ -10,140 +10,378 @@
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Prompt', sans-serif; background-color: #f1f5f9; margin: 0; }
+        :root {
+            --emerald-deep: #064e3b;
+            --emerald-primary: #059669;
+            --gold-accent: #f59e0b;
+        }
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f4f7f6;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.08) 0px, transparent 50%);
+            color: #0f172a;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.15); }
+
+        /* Hero Glass & Shimmer */
+        .hero-mesh {
+            background: linear-gradient(135deg, #022c22 0%, #064e3b 45%, #0f766e 100%);
         }
-        .live-dot { animation: pulseGlow 1.8s infinite ease-in-out; }
-        .service-btn-active { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.25); }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+        .glass-dark {
+            background: rgba(2, 44, 34, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* Live Indicator Animation */
+        @keyframes pulseRing {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+        }
+        .live-indicator { animation: pulseRing 2s infinite; }
+
+        /* Card Interactions */
+        .bento-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px -8px rgba(6, 78, 59, 0.12);
+        }
+        .bento-active {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -6px rgba(5, 150, 105, 0.25);
+        }
+
+        /* Custom Modal Slide Up */
+        .modal-backdrop {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(6px);
+            transition: opacity 0.25s ease;
+        }
+        .modal-sheet {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* E-Ticket Notch */
+        .ticket-notch-l, .ticket-notch-r {
+            position: absolute;
+            top: 50%;
+            width: 24px;
+            height: 24px;
+            background-color: #f4f7f6;
+            border-radius: 9999px;
+            transform: translateY(-50%);
+        }
+        .ticket-notch-l { left: -13px; border-right: 1px solid #cbd5e1; }
+        .ticket-notch-r { right: -13px; border-left: 1px solid #cbd5e1; }
     </style>
 </head>
-<body class="min-h-screen pb-24">
+<body class="min-h-screen pb-28">
 
-    <!-- 🟢 Header Banner -->
-    <header class="bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-900 text-white shadow-lg relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-44 h-44 bg-white/10 rounded-full blur-2xl"></div>
-        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-amber-400/10 rounded-full blur-xl"></div>
+    <!-- ==================== 🌿 HERO HEADER ==================== -->
+    <header class="hero-mesh text-white relative overflow-hidden pb-14 pt-4 px-4 sm:px-6 shadow-xl">
+        <!-- Decorative Background Image Blur -->
+        <div class="absolute inset-0 opacity-15 bg-cover bg-center mix-blend-luminosity pointer-events-none"
+             style="background-image: url('https://i.pinimg.com/736x/2f/69/7f/2f697fa1ae7d71f310df6a86ccb93231.jpg');"></div>
+        <div class="absolute -top-24 -right-24 w-80 h-80 bg-amber-400/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div class="max-w-4xl mx-auto px-4 pt-5 pb-6 relative z-10">
-            <div class="flex items-center justify-between gap-3 mb-3">
-                <div class="flex items-center gap-2 bg-black/25 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 live-dot"></span>
-                    <span class="text-[11px] font-bold tracking-wide text-emerald-100" id="sync-status-text">REALTIME DASHBOARD</span>
+        <div class="max-w-5xl mx-auto relative z-10">
+            <!-- Top Navigation Bar -->
+            <div class="flex items-center justify-between gap-2 mb-5">
+                <div class="glass-dark px-3.5 py-1.5 rounded-full flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 live-indicator"></span>
+                    <span class="text-[11px] sm:text-xs font-semibold tracking-wider text-emerald-100 uppercase" id="sync-status-text">
+                        LIVE REALTIME QUEUE
+                    </span>
                 </div>
+
                 <div class="flex items-center gap-2">
-                    <button onclick="openMyTicketsModal()" class="bg-amber-400 hover:bg-amber-300 text-slate-900 px-3 py-1.5 rounded-full text-xs font-extrabold shadow-md active:scale-95 transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-ticket"></i> คิวของฉัน <span id="my-ticket-badge" class="bg-slate-900 text-amber-300 px-1.5 py-0.2 rounded-full text-[10px] hidden">0</span>
+                    <button onclick="openMyTicketsModal()" class="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 px-3.5 py-1.5 rounded-full text-xs font-extrabold shadow-lg active:scale-95 transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-ticket"></i>
+                        <span>บัตรคิวของฉัน</span>
+                        <span id="my-ticket-badge" class="bg-slate-900 text-amber-300 px-1.5 py-0.5 rounded-full text-[10px] leading-none hidden">0</span>
                     </button>
-                    <button onclick="forceSyncFromSheet()" class="bg-white/15 hover:bg-white/25 text-white p-2 rounded-full text-xs backdrop-blur-md border border-white/20 active:scale-90 transition-all" title="ดึงข้อมูลล่าสุด">
-                        <i class="fa-solid fa-rotate" id="refresh-icon"></i>
+                    <button onclick="forceSyncFromSheet()" class="glass-dark hover:bg-white/20 text-white w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all" title="ซิงค์ข้อมูลล่าสุด">
+                        <i class="fa-solid fa-arrows-rotate text-xs" id="refresh-icon"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <img src="https://lh3.googleusercontent.com/d/1sxp0wrhV7MKhr2_6nOLQsj-jVddMmnzR" class="w-16 h-16 sm:w-20 sm:h-20 object-contain bg-white/90 p-1.5 rounded-2xl shadow-md">
-                <div>
-                    <span class="inline-block bg-amber-400/20 text-amber-200 border border-amber-300/30 text-[11px] font-bold px-2.5 py-0.5 rounded-md mb-1">
-                        <i class="fa-regular fa-calendar-check mr-1"></i>วันที่ 29 ตุลาคม 2570
-                    </span>
-                    <h1 class="text-lg sm:text-2xl font-extrabold leading-tight">วันภูมิปัญญาการแพทย์แผนไทยแห่งชาติ</h1>
-                    <p class="text-xs sm:text-sm text-emerald-100 font-medium mt-0.5">กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก โรงพยาบาลสะเดา</p>
+            <!-- Main Hero Content -->
+            <div class="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-5">
+                <div class="flex items-center gap-4 sm:gap-5 text-center sm:text-left flex-col sm:flex-row">
+                    <!-- Featured Art & Clinic Emblem -->
+                    <div class="relative group shrink-0">
+                        <div class="absolute -inset-1 bg-gradient-to-tr from-amber-400 to-emerald-400 rounded-3xl blur opacity-60 group-hover:opacity-90 transition"></div>
+                        <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-2 border-white/80 shadow-2xl bg-emerald-950">
+                            <img src="https://i.pinimg.com/736x/2f/69/7f/2f697fa1ae7d71f310df6a86ccb93231.jpg" 
+                                 alt="วันภูมิปัญญาการแพทย์แผนไทย" 
+                                 class="w-full h-full object-cover"
+                                 onerror="this.src='https://lh3.googleusercontent.com/d/1sxp0wrhV7MKhr2_6nOLQsj-jVddMmnzR'">
+                            <img src="https://lh3.googleusercontent.com/d/1sxp0wrhV7MKhr2_6nOLQsj-jVddMmnzR" 
+                                 alt="Logo" 
+                                 class="w-8 h-8 rounded-full bg-white p-0.5 shadow-md absolute bottom-1.5 right-1.5 object-contain">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 bg-amber-400/20 border border-amber-300/40 text-amber-200 text-xs font-bold px-3 py-1 rounded-full mb-2">
+                            <i class="fa-regular fa-calendar-check"></i>
+                            <span>29 ตุลาคม 2570 • ไม่ต้องใช้เลขบัตรประชาชน</span>
+                        </div>
+                        <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight leading-snug text-white drop-shadow-sm">
+                            วันภูมิปัญญาการแพทย์แผนไทยแห่งชาติ
+                        </h1>
+                        <p class="text-xs sm:text-sm text-emerald-100/90 font-medium mt-1 flex items-center justify-center sm:justify-start gap-1.5">
+                            <i class="fa-solid fa-hospital-user text-amber-300"></i>
+                            <span>กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก โรงพยาบาลสะเดา</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Overall Live Counter Pill -->
+                <div class="glass-dark rounded-2xl px-4 py-3 text-center sm:text-right shrink-0 w-full sm:w-auto border border-emerald-400/30">
+                    <p class="text-[11px] font-semibold text-emerald-200 uppercase tracking-wider">คิวว่างพร้อมให้บริการขณะนี้</p>
+                    <div class="flex items-baseline justify-center sm:justify-end gap-1.5 mt-0.5">
+                        <span class="text-3xl font-black text-amber-300" id="hero-total-free">-</span>
+                        <span class="text-xs text-emerald-100 font-semibold">/ <span id="hero-total-cap">-</span> คิวทั้งหมด</span>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- 📊 Main Content Container -->
-    <main class="max-w-4xl mx-auto px-4 -mt-4 relative z-20">
+    <!-- ==================== 📊 MAIN DASHBOARD CONTAINER ==================== -->
+    <main class="max-w-5xl mx-auto px-3.5 sm:px-6 -mt-8 relative z-20">
 
-        <!-- 1. การ์ดสรุปจำนวนคิวว่างแยกตามบริการ (กดเพื่อกรองได้) -->
-        <div class="bg-white rounded-3xl p-4 shadow-md border border-slate-100 mb-5">
-            <div class="flex items-center justify-between mb-3">
-                <h2 class="text-sm font-extrabold text-slate-700 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-emerald-600"></i> ภาพรวมคิวว่างแยกตามบริการ (กดเลือกเพื่อกรอง)
-                </h2>
-                <button onclick="setFilterService('ALL')" id="btn-filter-all" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-600 text-white shadow-sm transition-all">
-                    แสดงทุกบริการ
+        <!-- 1. BENTO GRID: 4 SERVICES REALTIME KPI & FILTER -->
+        <section class="glass-panel rounded-3xl p-4 sm:p-5 shadow-lg mb-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3.5">
+                <div class="flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </span>
+                    <div>
+                        <h2 class="text-sm sm:text-base font-extrabold text-slate-800 leading-none">สถานะคิวว่างแยกตามหัตถการ</h2>
+                        <p class="text-[11px] text-slate-500 mt-0.5">แตะที่การ์ดหัตถการเพื่อกรองดูเฉพาะบริการที่ต้องการ</p>
+                    </div>
+                </div>
+
+                <button onclick="setFilterService('ALL')" id="btn-filter-all" class="text-xs font-extrabold px-3.5 py-1.5 rounded-full bg-emerald-600 text-white shadow-sm transition-all">
+                    <i class="fa-solid fa-border-all mr-1"></i> แสดงครบทุกบริการ
                 </button>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="summary-cards-container">
-                <!-- เติมด้วย JS -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" id="summary-cards-container">
+                <!-- Skeleton Loading -->
+                <div class="h-28 rounded-2xl bg-slate-100 animate-pulse"></div>
+                <div class="h-28 rounded-2xl bg-slate-100 animate-pulse"></div>
+                <div class="h-28 rounded-2xl bg-slate-100 animate-pulse"></div>
+                <div class="h-28 rounded-2xl bg-slate-100 animate-pulse"></div>
             </div>
-        </div>
+        </section>
 
-        <!-- 2. แถบเลือกช่วงเวลา (ทั้งหมด / รอบเช้า / รอบบ่าย) -->
-        <div class="flex items-center justify-between mb-3 px-1">
-            <h2 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
-                <i class="fa-regular fa-clock text-emerald-600"></i> ตารางคิวว่างรายชั่วโมง
-            </h2>
-            <div class="inline-flex bg-slate-200/80 p-1 rounded-xl text-xs font-bold">
-                <button onclick="setFilterPeriod('ALL')" id="period-all" class="px-3 py-1 rounded-lg bg-white text-emerald-800 shadow-sm transition-all">ทั้งหมด</button>
-                <button onclick="setFilterPeriod('morning')" id="period-morning" class="px-3 py-1 rounded-lg text-slate-600 transition-all">เช้า</button>
-                <button onclick="setFilterPeriod('afternoon')" id="period-afternoon" class="px-3 py-1 rounded-lg text-slate-600 transition-all">บ่าย</button>
+        <!-- 2. SMART CONTROL BAR (Period Filter + Available Only + View Switcher) -->
+        <section class="bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-200/80 mb-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <!-- Left: Period Tabs -->
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button onclick="setFilterPeriod('ALL')" id="period-all" class="flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-extrabold bg-white text-emerald-800 shadow-sm transition-all">
+                    ทั้งหมด (11 รอบ)
+                </button>
+                <button onclick="setFilterPeriod('morning')" id="period-morning" class="flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
+                    <i class="fa-solid fa-sun text-amber-500 mr-1"></i>เช้า (08:30-11:00)
+                </button>
+                <button onclick="setFilterPeriod('afternoon')" id="period-afternoon" class="flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
+                    <i class="fa-solid fa-cloud-sun text-sky-500 mr-1"></i>บ่าย (13:00-15:00)
+                </button>
             </div>
-        </div>
 
-        <!-- คำแนะนำการใช้งานสั้นๆ -->
-        <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 mb-4 flex items-center gap-2.5 text-xs text-emerald-900">
-            <i class="fa-solid fa-hand-pointer text-emerald-600 text-base animate-bounce"></i>
-            <span><b>วิธีจองคิว:</b> แตะที่ปุ่มบริการที่ขึ้นสถานะ <span class="bg-emerald-600 text-white px-1.5 py-0.5 rounded font-bold">ว่าง</span> ในรอบเวลาที่ต้องการ แล้วกรอกเฉพาะชื่อและเบอร์โทรศัพท์</span>
-        </div>
+            <!-- Right: Available Toggle & View Mode Switcher -->
+            <div class="flex items-center justify-between md:justify-end gap-3">
+                <!-- Toggle Only Free -->
+                <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                    <input type="checkbox" id="toggle-free-only" class="sr-only peer" onchange="toggleFreeOnly(this.checked)">
+                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all relative peer-checked:bg-emerald-600"></div>
+                    <span class="text-xs font-bold text-slate-700">เฉพาะรอบที่มีคิวว่าง</span>
+                </label>
 
-        <!-- 3. รายการรอบเวลา (Dashboard Time Slots) -->
+                <div class="h-5 w-px bg-slate-200 hidden sm:block"></div>
+
+                <!-- View Mode Switcher -->
+                <div class="inline-flex bg-slate-100 p-1 rounded-xl">
+                    <button onclick="setViewMode('cards')" id="view-btn-cards" class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-white text-emerald-800 shadow-sm transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-grip"></i> <span class="hidden sm:inline">การ์ดจองคิว</span>
+                    </button>
+                    <button onclick="setViewMode('matrix')" id="view-btn-matrix" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-table-cells"></i> <span class="hidden sm:inline">ตารางจอมอนิเตอร์</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. DYNAMIC SLOTS CONTAINER (Card View OR Matrix Table View) -->
         <div id="slots-container" class="space-y-4">
-            <div class="bg-white rounded-3xl p-10 text-center shadow-sm border border-slate-100">
-                <i class="fa-solid fa-circle-notch fa-spin text-3xl text-emerald-600 mb-3"></i>
-                <p class="font-bold text-slate-700">กำลังโหลดข้อมูลคิวแบบ Realtime...</p>
+            <div class="bg-white rounded-3xl p-12 text-center shadow-sm border border-slate-100">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 text-2xl">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+                <h3 class="font-extrabold text-slate-800 text-base">กำลังเชื่อมต่อตารางคิววันภูมิปัญญาฯ...</h3>
+                <p class="text-xs text-slate-500 mt-1">ระบบกำลังดึงข้อมูลคิวว่างแบบ Realtime จากโรงพยาบาลสะเดา</p>
             </div>
         </div>
 
     </main>
 
-    <!-- ⚙️ Logic JavaScript -->
+    <!-- ==================== 🛒 CUSTOM BOOKING MODAL (BOTTOM SHEET / DIALOG) ==================== -->
+    <div id="booking-modal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 modal-backdrop">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden modal-sheet max-h-[92vh] flex flex-col">
+            <!-- Modal Header -->
+            <div id="modal-header-bar" class="bg-gradient-to-r from-emerald-800 to-teal-700 text-white p-5 relative">
+                <button onclick="closeBookingModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <div id="modal-svc-icon" class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-inner">
+                        <i class="fa-solid fa-spa"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-amber-300 block">ยืนยันการจองคิวรับบริการ</span>
+                        <h3 id="modal-svc-title" class="text-xl font-extrabold leading-tight">นวดตัว</h3>
+                        <p id="modal-time-subtitle" class="text-xs text-emerald-100 font-medium mt-0.5">
+                            <i class="fa-regular fa-clock mr-1"></i> รอบเวลา 08:30 - 09:00 น. (29 ต.ค. 2570)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-5 overflow-y-auto space-y-4 flex-1">
+                <!-- 1. เลือกเตียง / ผู้ให้บริการ (Chip Selector) -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-xs font-extrabold text-slate-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bed-pulse text-emerald-600"></i> 1. เลือกช่องบริการ / ผู้ให้บริการ
+                        </label>
+                        <span id="modal-free-badge" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                            ว่าง 0 คิว
+                        </span>
+                    </div>
+                    <div id="modal-staff-chips" class="grid grid-cols-2 gap-2">
+                        <!-- เติมด้วย JS -->
+                    </div>
+                    <input type="hidden" id="modal-selected-col" value="0">
+                </div>
+
+                <!-- 2. กรอกชื่อผู้รับบริการ -->
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 mb-1.5">
+                        <i class="fa-solid fa-user text-emerald-600 mr-1"></i> 2. ชื่อ - นามสกุล (หรือชื่อเล่น) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="modal-input-name" 
+                           class="w-full border-2 border-slate-200 focus:border-emerald-500 rounded-2xl px-4 py-3 text-sm font-bold text-slate-800 outline-none transition-all"
+                           placeholder="เช่น คุณสมชาย ใจดี">
+                </div>
+
+                <!-- 3. กรอกเบอร์โทรศัพท์ -->
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 mb-1.5">
+                        <i class="fa-solid fa-phone text-emerald-600 mr-1"></i> 3. เบอร์โทรศัพท์ติดต่อ <span class="text-red-500">*</span>
+                    </label>
+                    <input type="tel" id="modal-input-tel" maxlength="10"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           class="w-full border-2 border-slate-200 focus:border-emerald-500 rounded-2xl px-4 py-3 text-sm font-bold text-slate-800 tracking-wider outline-none transition-all"
+                           placeholder="08XXXXXXXX">
+                </div>
+
+                <div class="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-amber-900">
+                    <i class="fa-solid fa-circle-info text-amber-500 mt-0.5"></i>
+                    <span>ไม่ต้องใช้เลขบัตรประชาชน เมื่อกดยืนยันแล้วระบบจะตัดคิวว่างแบบ Realtime และออกบัตรคิวอิเล็กทรอนิกส์ให้ทันทีครับ</span>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200/80 flex gap-2.5">
+                <button onclick="closeBookingModal()" class="w-1/3 py-3.5 rounded-2xl font-bold text-xs sm:text-sm text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 active:scale-95 transition-all">
+                    ยกเลิก
+                </button>
+                <button onclick="confirmModalBooking()" id="btn-confirm-modal" class="w-2/3 py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-600/25 active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check-circle"></i> ยืนยันการจองคิว
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ⚙️ JAVASCRIPT ENGINE ==================== -->
     <script>
-        // 🔗 ตั้งค่า URL เชื่อมต่อระบบเดิมของคลินิก
+        // 🔗 URL ของ Google Apps Script ที่คุณเพิ่ง Deploy ใหม่
         const API_URL = "https://script.google.com/macros/s/AKfycbys15Lk-RkZFyQBcLN0r8qTqTnxrtmMEuVYeVWYqWAD5hxIftDC1NfYcD5U1Lp57pIn/exec";
         const FIREBASE_WISDOM_URL = "https://sadao-queue-999c3-default-rtdb.asia-southeast1.firebasedatabase.app/sadaoData/wisdomDay.json";
         const LIFF_ID = "2010086236-cSpA2YLB";
 
-        // ข้อมูลสไตล์ของแต่ละหัตถการ
+        // ข้อมูลดีไซน์ของแต่ละหัตถการ
         const SERVICE_META = {
             "นวดตัว": {
                 icon: "fa-spa",
-                color: "emerald",
-                bgLight: "bg-emerald-50",
-                borderLight: "border-emerald-200",
-                textMain: "text-emerald-800",
-                badgeBg: "bg-emerald-600"
+                desc: "คลายกล้ามเนื้อ บรรเทาปวดเมื่อย",
+                gradient: "from-emerald-600 to-teal-600",
+                bgSoft: "bg-emerald-50/90",
+                borderSoft: "border-emerald-200",
+                textMain: "text-emerald-900",
+                textAccent: "text-emerald-600",
+                badgeBg: "bg-emerald-600",
+                barColor: "bg-emerald-500",
+                ringActive: "ring-2 ring-emerald-600 bg-emerald-50/70"
             },
             "นวดเท้า": {
                 icon: "fa-shoe-prints",
-                color: "amber",
-                bgLight: "bg-amber-50",
-                borderLight: "border-amber-200",
-                textMain: "text-amber-800",
-                badgeBg: "bg-amber-500"
+                desc: "กดจุดสะท้อนฝ่าเท้า กระตุ้นไหลเวียน",
+                gradient: "from-amber-500 to-orange-500",
+                bgSoft: "bg-amber-50/90",
+                borderSoft: "border-amber-200",
+                textMain: "text-amber-900",
+                textAccent: "text-amber-600",
+                badgeBg: "bg-amber-500",
+                barColor: "bg-amber-500",
+                ringActive: "ring-2 ring-amber-500 bg-amber-50/70"
             },
             "พอกเข่า": {
                 icon: "fa-leaf",
-                color: "teal",
-                bgLight: "bg-teal-50",
-                borderLight: "border-teal-200",
-                textMain: "text-teal-800",
-                badgeBg: "bg-teal-600"
+                desc: "พอกสมุนไพรลดปวดเข่า ข้อเข่าเสื่อม",
+                gradient: "from-teal-600 to-cyan-600",
+                bgSoft: "bg-teal-50/90",
+                borderSoft: "border-teal-200",
+                textMain: "text-teal-900",
+                textAccent: "text-teal-600",
+                badgeBg: "bg-teal-600",
+                barColor: "bg-teal-500",
+                ringActive: "ring-2 ring-teal-600 bg-teal-50/70"
             },
             "ฝังเข็ม": {
                 icon: "fa-yin-yang",
-                color: "rose",
-                bgLight: "bg-rose-50",
-                borderLight: "border-rose-200",
-                textMain: "text-rose-800",
-                badgeBg: "bg-rose-600"
+                desc: "ศาสตร์แพทย์แผนจีน ปรับสมดุลร่างกาย",
+                gradient: "from-rose-600 to-pink-600",
+                bgSoft: "bg-rose-50/90",
+                borderSoft: "border-rose-200",
+                textMain: "text-rose-900",
+                textAccent: "text-rose-600",
+                badgeBg: "bg-rose-600",
+                barColor: "bg-rose-500",
+                ringActive: "ring-2 ring-rose-600 bg-rose-50/70"
             }
         };
 
@@ -157,20 +395,22 @@
         let wisdomData = null;
         let selectedServiceFilter = "ALL";
         let selectedPeriodFilter = "ALL";
-        let pollingInterval = null;
+        let showOnlyFree = false;
+        let currentViewMode = "cards"; // 'cards' | 'matrix'
+        let activeModalContext = { time: "", service: "", availableCols: [] };
 
         window.onload = () => {
             updateMyTicketBadge();
-            initRealtimeDashboard();
-            // Инициализация LIFF แบบไม่บังคับล็อกอิน (เพื่อให้คนทั่วไปเปิดผ่านเบราว์เซอร์ได้ทันที)
-            try { liff.init({ liffId: LIFF_ID }).catch(() => {}); } catch(e) {}
+            initRealtimeSystem();
+            try { liff.init({ liffId: LIFF_ID }).catch(() => {}); } catch (e) {}
         };
 
-        // 🔄 เริ่มระบบดึงข้อมูล Realtime (Firebase + Auto Polling ทุก 4 วินาที)
-        function initRealtimeDashboard() {
+        // ==========================================
+        // 🔄 1. REALTIME DATA ENGINE (Firebase + Fallback)
+        // ==========================================
+        function initRealtimeSystem() {
             fetchFirebaseData(true);
-            // ตั้งเวลาดึงจาก Firebase ทุก 4 วินาที (เร็วและไม่ติดโควตา Google Sheets)
-            pollingInterval = setInterval(() => {
+            setInterval(() => {
                 fetchFirebaseData(false);
             }, 4000);
         }
@@ -181,10 +421,9 @@
                 .then(data => {
                     if (data && data.slots && data.slots.length > 0) {
                         wisdomData = data;
-                        renderDashboard();
+                        renderAll();
                         updateSyncTimestamp(data.lastUpdate);
                     } else if (isFirstLoad) {
-                        // หากใน Firebase ยังไม่มีโหนด wisdomDay ให้สั่งดึงตรงจาก Google Sheet แล้วสร้างโหนดทันที
                         forceSyncFromSheet();
                     }
                 })
@@ -193,11 +432,10 @@
                 });
         }
 
-        // สั่งให้ Apps Script อ่านชีต "วันภูมิปัญญา" ใหม่และอัปเดตขึ้น Firebase ทันที
         function forceSyncFromSheet() {
             const icon = document.getElementById('refresh-icon');
             if (icon) icon.classList.add('fa-spin');
-            document.getElementById('sync-status-text').innerText = "กำลังซิงค์ข้อมูลจากชีต...";
+            document.getElementById('sync-status-text').innerText = "กำลังซิงค์ข้อมูลจาก Google Sheet...";
 
             fetch(API_URL + "?action=getWisdomData&t=" + new Date().getTime())
                 .then(r => r.json())
@@ -205,42 +443,78 @@
                     if (icon) icon.classList.remove('fa-spin');
                     if (data && data.status === "success") {
                         wisdomData = data;
-                        renderDashboard();
+                        renderAll();
                         updateSyncTimestamp(data.lastUpdate);
-                        // สั่งซิงค์ขึ้น Firebase เบื้องหลังเผื่อหน้าจออื่นด้วย
-                        fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'sync_wisdom' }) }).catch(()=>{});
+                        fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'sync_wisdom' }) }).catch(() => {});
                     } else if (data && data.status === "no_sheet") {
-                        document.getElementById('slots-container').innerHTML = `
-                            <div class="bg-red-50 border border-red-200 rounded-3xl p-8 text-center">
-                                <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500 mb-2"></i>
-                                <h3 class="font-extrabold text-red-800">ไม่พบชีตชื่อ "วันภูมิปัญญา"</h3>
-                                <p class="text-xs text-red-600 mt-1">กรุณาตรวจสอบว่าในไฟล์ Google Sheets มีแผ่นงานชื่อ <b>วันภูมิปัญญา</b> เรียบร้อยแล้ว</p>
-                            </div>`;
+                        renderErrorState(
+                            'ไม่พบแผ่นงานชื่อ "วันภูมิปัญญา"',
+                            'กรุณาตรวจสอบว่าในไฟล์ Google Sheets มีชีตชื่อ "วันภูมิปัญญา" และใส่รหัส GRID_SHEET_ID ใน Apps Script ถูกต้องแล้ว'
+                        );
+                    } else {
+                        renderErrorState(
+                            'ยังไม่ได้ตั้งค่า GRID_SHEET_ID หรือสิทธิ์การเข้าถึงชีต',
+                            (data && data.message) ? data.message : 'กรุณาตรวจสอบตัวแปร GRID_SHEET_ID ใน Google Apps Script'
+                        );
                     }
                 })
-                .catch(() => {
+                .catch(err => {
                     if (icon) icon.classList.remove('fa-spin');
-                    document.getElementById('sync-status-text').innerText = "REALTIME DASHBOARD";
+                    document.getElementById('sync-status-text').innerText = "LIVE REALTIME QUEUE";
                 });
         }
 
         function updateSyncTimestamp(ts) {
             const el = document.getElementById('sync-status-text');
-            if (!ts) { el.innerText = "อัปเดตแบบ REALTIME"; return; }
+            if (!ts) { el.innerText = "LIVE REALTIME QUEUE"; return; }
             const d = new Date(ts);
             const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            el.innerText = `อัปเดตล่าสุด ${timeStr} น.`;
+            el.innerText = `อัปเดตเรียลไทม์ ${timeStr} น.`;
         }
 
-        // 🎨 วาดหน้าจอ Dashboard ทั้งหมด
-        function renderDashboard() {
+        function renderErrorState(title, msg) {
+            document.getElementById('slots-container').innerHTML = `
+                <div class="bg-white border-2 border-red-100 rounded-3xl p-8 text-center shadow-sm">
+                    <div class="w-14 h-14 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-3 text-2xl">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="font-extrabold text-red-900 text-base">${title}</h3>
+                    <p class="text-xs text-slate-600 mt-1 max-w-md mx-auto">${msg}</p>
+                    <button onclick="forceSyncFromSheet()" class="mt-4 bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow hover:bg-emerald-700 transition">
+                        <i class="fa-solid fa-rotate mr-1"></i> ลองเชื่อมต่ออีกครั้ง
+                    </button>
+                </div>`;
+        }
+
+        // ==========================================
+        // 🎨 2. DASHBOARD RENDERING (Bento + Cards + Matrix)
+        // ==========================================
+        function renderAll() {
             if (!wisdomData || !wisdomData.slots) return;
-
-            renderSummaryCards();
-            renderTimeSlots();
+            renderHeroTotals();
+            renderBentoSummary();
+            if (currentViewMode === 'matrix') {
+                renderMatrixView();
+            } else {
+                renderCardsView();
+            }
         }
 
-        function renderSummaryCards() {
+        function renderHeroTotals() {
+            const sum = wisdomData.summary || {};
+            let totalFree = 0;
+            let totalCap = 0;
+            ["นวดตัว", "นวดเท้า", "พอกเข่า", "ฝังเข็ม"].forEach(k => {
+                if (sum[k]) {
+                    totalFree += (sum[k].free || 0);
+                    totalCap += (sum[k].total || 0);
+                }
+            });
+            document.getElementById('hero-total-free').innerText = totalFree;
+            document.getElementById('hero-total-cap').innerText = totalCap;
+        }
+
+        function renderBentoSummary() {
             const sum = wisdomData.summary || {};
             const services = ["นวดตัว", "นวดเท้า", "พอกเข่า", "ฝังเข็ม"];
             let html = "";
@@ -248,24 +522,39 @@
             services.forEach(svc => {
                 const meta = SERVICE_META[svc];
                 const info = sum[svc] || { free: 0, total: 0 };
+                const pct = info.total > 0 ? Math.round((info.free / info.total) * 100) : 0;
                 const isSelected = (selectedServiceFilter === svc);
-                const activeClass = isSelected
-                    ? `ring-2 ring-emerald-600 ${meta.bgLight} service-btn-active`
-                    : `bg-slate-50 hover:bg-slate-100 border-slate-200`;
+
+                const cardBorder = isSelected
+                    ? `${meta.ringActive} border-transparent bento-active`
+                    : `bg-white hover:bg-slate-50/80 border-slate-200/80`;
 
                 html += `
-                <div onclick="setFilterService('${svc}')" class="cursor-pointer rounded-2xl p-3 border transition-all flex flex-col justify-between ${activeClass}">
-                    <div class="flex items-center justify-between mb-1.5">
-                        <span class="font-extrabold text-xs sm:text-sm ${meta.textMain} flex items-center gap-1.5">
-                            <i class="fa-solid ${meta.icon}"></i> ${svc}
-                        </span>
-                        <span class="text-[10px] font-bold text-slate-400">ทั้งหมด ${info.total}</span>
+                <div onclick="setFilterService('${svc}')" class="bento-card cursor-pointer rounded-2xl p-3.5 border ${cardBorder} flex flex-col justify-between relative overflow-hidden">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${meta.gradient} text-white flex items-center justify-center text-base shadow-sm shrink-0">
+                                <i class="fa-solid ${meta.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-sm sm:text-base text-slate-800 leading-tight">${svc}</h3>
+                                <p class="text-[10px] text-slate-500 line-clamp-1">${meta.desc}</p>
+                            </div>
+                        </div>
+                        ${isSelected ? `<span class="bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">กำลังกรอง</span>` : ``}
                     </div>
-                    <div class="flex items-baseline justify-between mt-1">
-                        <span class="text-[11px] font-semibold text-slate-500">คิวว่าง</span>
-                        <span class="text-xl sm:text-2xl font-black ${info.free > 0 ? 'text-emerald-600' : 'text-red-500'}">
-                            ${info.free} <span class="text-xs font-bold text-slate-500">คิว</span>
-                        </span>
+
+                    <div class="mt-3">
+                        <div class="flex items-baseline justify-between mb-1">
+                            <span class="text-[11px] font-bold text-slate-500">ว่าง / ทั้งหมด</span>
+                            <div>
+                                <span class="text-xl sm:text-2xl font-black ${info.free > 0 ? meta.textAccent : 'text-red-500'}">${info.free}</span>
+                                <span class="text-xs font-bold text-slate-400">/ ${info.total} คิว</span>
+                            </div>
+                        </div>
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full ${info.free > 0 ? meta.barColor : 'bg-red-400'} rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
                     </div>
                 </div>`;
             });
@@ -274,136 +563,255 @@
 
             const btnAll = document.getElementById('btn-filter-all');
             if (selectedServiceFilter === 'ALL') {
-                btnAll.className = "text-xs font-bold px-3 py-1 rounded-full bg-emerald-600 text-white shadow-sm transition-all";
+                btnAll.className = "text-xs font-extrabold px-3.5 py-1.5 rounded-full bg-emerald-600 text-white shadow-sm transition-all";
             } else {
-                btnAll.className = "text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
+                btnAll.className = "text-xs font-bold px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
             }
         }
 
-        function renderTimeSlots() {
+        // 🗂️ มุมมองที่ 1: การ์ดจองคิวรายชั่วโมง (Card View)
+        function renderCardsView() {
             const slots = wisdomData.slots || [];
             const servicesOrder = selectedServiceFilter === "ALL"
                 ? ["นวดตัว", "นวดเท้า", "พอกเข่า", "ฝังเข็ม"]
                 : [selectedServiceFilter];
 
             let html = "";
-            let morningDividerShown = false;
-            let afternoonDividerShown = false;
+            let morningShown = false;
+            let afternoonShown = false;
+            let renderedCount = 0;
 
             slots.forEach(slot => {
                 if (selectedPeriodFilter !== "ALL" && slot.period !== selectedPeriodFilter) return;
 
-                // แถบคั่นรอบเช้า / พักเที่ยง / รอบบ่าย
-                if (slot.period === "morning" && !morningDividerShown && selectedPeriodFilter === "ALL") {
-                    morningDividerShown = true;
-                    html += `<div class="flex items-center gap-2 pt-1"><span class="bg-amber-100 text-amber-800 text-xs font-extrabold px-3 py-1 rounded-full"><i class="fa-solid fa-sun mr-1"></i> รอบเช้า (08:30 - 11:30 น.)</span><div class="flex-1 h-px bg-slate-200"></div></div>`;
-                }
-                if (slot.period === "afternoon" && !afternoonDividerShown && selectedPeriodFilter === "ALL") {
-                    afternoonDividerShown = true;
-                    html += `
-                    <div class="bg-teal-50/80 border border- dashed border-teal-300 rounded-2xl p-2.5 text-center text-xs font-bold text-teal-800 my-2">
-                        <i class="fa-solid fa-utensils mr-1"></i> พักรับประทานอาหารกลางวัน (11:30 - 13:00 น.)
-                    </div>
-                    <div class="flex items-center gap-2 pt-1"><span class="bg-sky-100 text-sky-800 text-xs font-extrabold px-3 py-1 rounded-full"><i class="fa-solid fa-cloud-sun mr-1"></i> รอบบ่าย (13:00 - 15:30 น.)</span><div class="flex-1 h-px bg-slate-200"></div></div>`;
-                }
-
-                const endTime = END_TIME_MAP[slot.time] || "";
-                const displayFreeCount = selectedServiceFilter === "ALL"
+                const freeInView = selectedServiceFilter === "ALL"
                     ? slot.totalFree
                     : (slot.services[selectedServiceFilter] ? slot.services[selectedServiceFilter].free : 0);
 
-                const timeBadgeColor = displayFreeCount > 0
-                    ? "bg-emerald-600 text-white"
-                    : "bg-slate-200 text-slate-500";
+                if (showOnlyFree && freeInView === 0) return;
+                renderedCount++;
 
-                let serviceCardsHtml = "";
+                // Section Dividers
+                if (slot.period === "morning" && !morningShown && selectedPeriodFilter === "ALL") {
+                    morningShown = true;
+                    html += `
+                    <div class="flex items-center gap-3 pt-2">
+                        <span class="bg-amber-100 text-amber-900 border border-amber-200 text-xs font-extrabold px-3.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-sun text-amber-500"></i> รอบเช้า (08:30 - 11:30 น.)
+                        </span>
+                        <div class="flex-1 h-px bg-slate-200"></div>
+                    </div>`;
+                }
+                if (slot.period === "afternoon" && !afternoonShown && selectedPeriodFilter === "ALL") {
+                    afternoonShown = true;
+                    html += `
+                    <div class="bg-gradient-to-r from-teal-50 via-emerald-50 to-teal-50 border border-dashed border-teal-300 rounded-2xl p-3 text-center text-xs font-bold text-teal-900 my-3 shadow-inner">
+                        <i class="fa-solid fa-mug-hot text-teal-600 mr-1.5"></i> พักรับประทานอาหารกลางวัน (11:30 - 13:00 น.)
+                    </div>
+                    <div class="flex items-center gap-3 pt-1">
+                        <span class="bg-sky-100 text-sky-900 border border-sky-200 text-xs font-extrabold px-3.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-cloud-sun text-sky-500"></i> รอบบ่าย (13:00 - 15:30 น.)
+                        </span>
+                        <div class="flex-1 h-px bg-slate-200"></div>
+                    </div>`;
+                }
+
+                const endTime = END_TIME_MAP[slot.time] || "";
+                let serviceButtonsHtml = "";
+
                 servicesOrder.forEach(svcName => {
                     const svcObj = (slot.services && slot.services[svcName]) ? slot.services[svcName] : { free: 0, total: 0, availableCols: [] };
                     const meta = SERVICE_META[svcName];
 
-                    // กรณีที่ 1: รอบเวลานั้นไม่มีบริการนี้เปิดเลย (เช่น แถวที่ 3 เป็น "พัก" ทั้งหมด)
+                    // 1. แถวที่ 3 เป็น "พัก" หรือไม่เปิดบริการในรอบนี้
                     if (svcObj.total === 0) {
-                        serviceCardsHtml += `
-                        <div class="rounded-2xl p-3 border border-slate-100 bg-slate-50/70 flex items-center justify-between opacity-60 cursor-not-allowed">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-xl bg-slate-200 text-slate-400 flex items-center justify-center text-sm">
+                        serviceButtonsHtml += `
+                        <div class="rounded-2xl p-3.5 border border-slate-100 bg-slate-50/70 flex items-center justify-between opacity-60 select-none">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-slate-200 text-slate-400 flex items-center justify-center text-sm">
                                     <i class="fa-solid ${meta.icon}"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-slate-500 text-xs sm:text-sm">${svcName}</p>
-                                    <p class="text-[10px] text-slate-400 font-semibold">พัก / ไม่เปิดรับคิว</p>
+                                    <p class="font-bold text-slate-500 text-sm">${svcName}</p>
+                                    <p class="text-[11px] text-slate-400 font-medium">พักรอบ / ไม่เปิดรับคิว</p>
                                 </div>
                             </div>
-                            <span class="text-[10px] font-bold bg-slate-200 text-slate-500 px-2 py-1 rounded-lg">พัก</span>
+                            <span class="text-[11px] font-bold bg-slate-200/80 text-slate-500 px-2.5 py-1 rounded-xl">พัก</span>
                         </div>`;
                     }
-                    // กรณีที่ 2: มีคิวเปิด แต่ถูกจองเต็มหมดแล้ว
+                    // 2. เปิดบริการแต่คิวเต็มแล้ว
                     else if (svcObj.free === 0) {
-                        serviceCardsHtml += `
-                        <div class="rounded-2xl p-3 border border-red-100 bg-red-50/40 flex items-center justify-between opacity-80 cursor-not-allowed">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-xl bg-red-100 text-red-500 flex items-center justify-center text-sm">
+                        serviceButtonsHtml += `
+                        <div class="rounded-2xl p-3.5 border border-red-100 bg-red-50/40 flex items-center justify-between opacity-85 select-none">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-red-100 text-red-500 flex items-center justify-center text-sm">
                                     <i class="fa-solid ${meta.icon}"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-slate-700 text-xs sm:text-sm">${svcName}</p>
-                                    <p class="text-[10px] text-red-500 font-semibold">จองครบ ${svcObj.total} คิวแล้ว</p>
+                                    <p class="font-bold text-slate-700 text-sm">${svcName}</p>
+                                    <p class="text-[11px] text-red-500 font-semibold">จองครบ ${svcObj.total} คิวแล้ว</p>
                                 </div>
                             </div>
-                            <span class="text-xs font-extrabold bg-red-100 text-red-600 px-2.5 py-1 rounded-xl">เต็ม</span>
+                            <span class="text-xs font-extrabold bg-red-100 text-red-600 px-3 py-1 rounded-xl">เต็ม</span>
                         </div>`;
                     }
-                    // กรณีที่ 3: มีคิวว่าง -> กดจองได้ทันที!
+                    // 3. มีคิวว่าง กดจองได้ทันที
                     else {
                         const encodedCols = encodeURIComponent(JSON.stringify(svcObj.availableCols || []));
-                        serviceCardsHtml += `
-                        <button onclick="openBookingPopup('${slot.time}', '${svcName}', '${encodedCols}')" class="w-full text-left rounded-2xl p-3 border-2 ${meta.borderLight} ${meta.bgLight} hover:shadow-md active:scale-95 transition-all flex items-center justify-between group">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-9 h-9 rounded-xl ${meta.badgeBg} text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-110 transition-transform">
+                        const staffNamesPreview = (svcObj.availableCols || []).slice(0, 3).map(c => c.staff).join(', ');
+
+                        serviceButtonsHtml += `
+                        <button onclick="openBookingModal('${slot.time}', '${svcName}', '${encodedCols}')" 
+                                class="w-full text-left rounded-2xl p-3.5 border-2 ${meta.borderSoft} ${meta.bgSoft} hover:bg-white hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-between group">
+                            <div class="flex items-center gap-3 min-w-0 pr-2">
+                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${meta.gradient} text-white flex items-center justify-center text-base shadow-sm group-hover:scale-110 transition-transform shrink-0">
                                     <i class="fa-solid ${meta.icon}"></i>
                                 </div>
-                                <div>
-                                    <p class="font-extrabold ${meta.textMain} text-xs sm:text-sm">${svcName}</p>
-                                    <p class="text-[10px] text-slate-600 font-semibold">รับได้ ${svcObj.total} คิว</p>
+                                <div class="min-w-0">
+                                    <p class="font-extrabold ${meta.textMain} text-sm sm:text-base leading-tight">${svcName}</p>
+                                    <p class="text-[11px] text-slate-600 font-medium truncate mt-0.5">
+                                        <i class="fa-solid fa-user-Check text-[10px] text-emerald-600 mr-1"></i>ว่าง: ${staffNamesPreview || (svcObj.free + ' ช่องบริการ')}
+                                    </p>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <span class="inline-block bg-emerald-600 text-white text-xs font-extrabold px-2.5 py-1 rounded-xl shadow-sm">
-                                    ว่าง ${svcObj.free} คิว
+                            <div class="text-right shrink-0">
+                                <span class="inline-flex items-center gap-1 bg-emerald-600 group-hover:bg-emerald-700 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-sm transition">
+                                    <span>ว่าง ${svcObj.free}</span>
+                                    <i class="fa-solid fa-chevron-right text-[9px]"></i>
                                 </span>
-                                <p class="text-[9px] text-emerald-700 font-bold mt-0.5">กดจอง <i class="fa-solid fa-chevron-right text-[8px]"></i></p>
+                                <p class="text-[10px] text-slate-500 font-semibold mt-0.5">จาก ${svcObj.total} คิว</p>
                             </div>
                         </button>`;
                     }
                 });
 
-                const gridColsClass = selectedServiceFilter === "ALL" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1";
+                const gridCols = selectedServiceFilter === "ALL" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1";
 
                 html += `
-                <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-200/80">
-                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                        <div class="flex items-center gap-2.5">
-                            <span class="${timeBadgeColor} font-black text-base sm:text-lg px-3 py-1 rounded-xl shadow-sm">
-                                ${slot.time} น.
-                            </span>
-                            <span class="text-xs font-bold text-slate-500">ถึง ${endTime} น.</span>
+                <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-sm border border-slate-200/80 hover:border-emerald-200 transition-colors">
+                    <div class="flex items-center justify-between pb-3 mb-3.5 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="${freeInView > 0 ? 'bg-emerald-700 text-white' : 'bg-slate-200 text-slate-500'} font-black text-base sm:text-lg px-3.5 py-1.5 rounded-2xl shadow-sm flex items-center gap-1.5">
+                                <i class="fa-regular fa-clock text-xs opacity-80"></i>
+                                <span>${slot.time} น.</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-extrabold text-slate-700">รอบเวลา ${slot.time} - ${endTime} น.</p>
+                                <p class="text-[11px] text-slate-400 font-medium">${slot.period === 'morning' ? 'ช่วงเช้า (30 นาที/รอบ)' : 'ช่วงบ่าย (30 นาที/รอบ)'}</p>
+                            </div>
                         </div>
-                        <span class="text-xs font-extrabold ${displayFreeCount > 0 ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' : 'text-red-600 bg-red-50'} px-3 py-1 rounded-full">
-                            ${displayFreeCount > 0 ? `ว่างรวม ${displayFreeCount} คิว` : 'เต็มทุกรายการ'}
+
+                        <span class="text-xs font-extrabold ${freeInView > 0 ? 'text-emerald-700 bg-emerald-50 border border-emerald-200' : 'text-red-600 bg-red-50 border border-red-100'} px-3 py-1 rounded-full">
+                            ${freeInView > 0 ? `<i class="fa-solid fa-circle-check mr-1"></i>ว่างรวม ${freeInView} คิว` : 'เต็มทุกรายการ'}
                         </span>
                     </div>
-                    <div class="grid ${gridColsClass} gap-2.5">
-                        ${serviceCardsHtml}
+
+                    <div class="grid ${gridCols} gap-2.5">
+                        ${serviceButtonsHtml}
                     </div>
                 </div>`;
             });
 
+            if (renderedCount === 0) {
+                html = `
+                <div class="bg-white rounded-3xl p-10 text-center border border-slate-200/70">
+                    <i class="fa-regular fa-calendar-xmark text-3xl text-slate-400 mb-2"></i>
+                    <p class="font-extrabold text-slate-700 text-sm">ไม่พบรอบเวลาที่ตรงกับตัวกรอง</p>
+                    <button onclick="resetAllFilters()" class="mt-3 text-xs font-bold text-emerald-700 bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-200">
+                        แสดงทุกรอบเวลา
+                    </button>
+                </div>`;
+            }
+
             document.getElementById('slots-container').innerHTML = html;
         }
 
+        // 🖥️ มุมมองที่ 2: ตารางจอมอนิเตอร์ (Matrix TV Board View)
+        function renderMatrixView() {
+            const slots = wisdomData.slots || [];
+            const services = ["นวดตัว", "นวดเท้า", "พอกเข่า", "ฝังเข็ม"];
+
+            let rowsHtml = "";
+            slots.forEach(slot => {
+                if (selectedPeriodFilter !== "ALL" && slot.period !== selectedPeriodFilter) return;
+                if (showOnlyFree && slot.totalFree === 0) return;
+
+                if (slot.time === "13:00" && selectedPeriodFilter === "ALL") {
+                    rowsHtml += `
+                    <tr class="bg-teal-50/70 border-y border-teal-200">
+                        <td colspan="6" class="py-2 text-center text-xs font-extrabold text-teal-800">
+                            <i class="fa-solid fa-utensils mr-1"></i> พักรับประทานอาหารกลางวัน (11:30 - 13:00 น.)
+                        </td>
+                    </tr>`;
+                }
+
+                let cellsHtml = "";
+                services.forEach(svcName => {
+                    const svcObj = (slot.services && slot.services[svcName]) ? slot.services[svcName] : { free: 0, total: 0, availableCols: [] };
+                    const isDimmed = (selectedServiceFilter !== "ALL" && selectedServiceFilter !== svcName);
+
+                    if (svcObj.total === 0) {
+                        cellsHtml += `
+                        <td class="p-2 text-center ${isDimmed ? 'opacity-25' : ''}">
+                            <span class="inline-block w-full py-2 rounded-xl bg-slate-100 text-slate-400 text-xs font-bold">พัก</span>
+                        </td>`;
+                    } else if (svcObj.free === 0) {
+                        cellsHtml += `
+                        <td class="p-2 text-center ${isDimmed ? 'opacity-25' : ''}">
+                            <span class="inline-block w-full py-2 rounded-xl bg-red-50 text-red-500 border border-red-100 text-xs font-extrabold">เต็ม (0/${svcObj.total})</span>
+                        </td>`;
+                    } else {
+                        const encodedCols = encodeURIComponent(JSON.stringify(svcObj.availableCols || []));
+                        cellsHtml += `
+                        <td class="p-2 text-center ${isDimmed ? 'opacity-25' : ''}">
+                            <button onclick="openBookingModal('${slot.time}', '${svcName}', '${encodedCols}')"
+                                    class="w-full py-2 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm active:scale-95 transition">
+                                ว่าง ${svcObj.free}/${svcObj.total}
+                            </button>
+                        </td>`;
+                    }
+                });
+
+                rowsHtml += `
+                <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
+                    <td class="p-3 font-black text-slate-800 text-xs sm:text-sm whitespace-nowrap">
+                        ${slot.time} - ${END_TIME_MAP[slot.time]}
+                    </td>
+                    ${cellsHtml}
+                    <td class="p-3 text-center font-extrabold text-xs ${slot.totalFree > 0 ? 'text-emerald-700' : 'text-red-500'}">
+                        ${slot.totalFree} คิว
+                    </td>
+                </tr>`;
+            });
+
+            document.getElementById('slots-container').innerHTML = `
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[640px]">
+                        <thead>
+                            <tr class="bg-slate-800 text-white text-xs uppercase">
+                                <th class="p-3.5 font-extrabold">รอบเวลา</th>
+                                <th class="p-3.5 text-center font-extrabold"><i class="fa-solid fa-spa text-emerald-400 mr-1"></i>นวดตัว</th>
+                                <th class="p-3.5 text-center font-extrabold"><i class="fa-solid fa-shoe-prints text-amber-400 mr-1"></i>นวดเท้า</th>
+                                <th class="p-3.5 text-center font-extrabold"><i class="fa-solid fa-leaf text-teal-400 mr-1"></i>พอกเข่า</th>
+                                <th class="p-3.5 text-center font-extrabold"><i class="fa-solid fa-yin-yang text-rose-400 mr-1"></i>ฝังเข็ม</th>
+                                <th class="p-3.5 text-center font-extrabold">รวมว่าง</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+                </div>
+            </div>`;
+        }
+
+        // ==========================================
+        // 🎛️ 3. FILTER & VIEW CONTROLS
+        // ==========================================
         function setFilterService(svc) {
             selectedServiceFilter = (selectedServiceFilter === svc && svc !== "ALL") ? "ALL" : svc;
-            renderDashboard();
+            renderAll();
         }
 
         function setFilterPeriod(period) {
@@ -412,90 +820,122 @@
                 const btn = document.getElementById('period-' + p.toLowerCase());
                 if (!btn) return;
                 if (p === period) {
-                    btn.className = "px-3 py-1 rounded-lg bg-white text-emerald-800 shadow-sm transition-all";
+                    btn.className = "flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-extrabold bg-white text-emerald-800 shadow-sm transition-all";
                 } else {
-                    btn.className = "px-3 py-1 rounded-lg text-slate-600 transition-all";
+                    btn.className = "flex-1 md:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all";
                 }
             });
-            renderTimeSlots();
+            renderAll();
         }
 
-        // 📝 เปิด Popup จองคิว (กรอกแค่ ชื่อ และ เบอร์โทร)
-        function openBookingPopup(timeStr, serviceName, encodedCols) {
+        function toggleFreeOnly(checked) {
+            showOnlyFree = checked;
+            renderAll();
+        }
+
+        function setViewMode(mode) {
+            currentViewMode = mode;
+            const btnCards = document.getElementById('view-btn-cards');
+            const btnMatrix = document.getElementById('view-btn-matrix');
+            if (mode === 'cards') {
+                btnCards.className = "px-3 py-1.5 rounded-lg text-xs font-extrabold bg-white text-emerald-800 shadow-sm transition-all flex items-center gap-1.5";
+                btnMatrix.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5";
+            } else {
+                btnMatrix.className = "px-3 py-1.5 rounded-lg text-xs font-extrabold bg-white text-emerald-800 shadow-sm transition-all flex items-center gap-1.5";
+                btnCards.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5";
+            }
+            renderAll();
+        }
+
+        function resetAllFilters() {
+            selectedServiceFilter = "ALL";
+            selectedPeriodFilter = "ALL";
+            showOnlyFree = false;
+            document.getElementById('toggle-free-only').checked = false;
+            setFilterPeriod('ALL');
+        }
+
+        // ==========================================
+        // 🛒 4. CUSTOM BOOKING MODAL & SUBMISSION
+        // ==========================================
+        function openBookingModal(timeStr, serviceName, encodedCols) {
             const availableCols = JSON.parse(decodeURIComponent(encodedCols));
+            activeModalContext = { time: timeStr, service: serviceName, availableCols: availableCols };
+
+            const meta = SERVICE_META[serviceName] || SERVICE_META["นวดตัว"];
             const savedUser = JSON.parse(localStorage.getItem('wisdom_last_user') || '{"name":"","tel":""}');
 
-            let staffOptionsHtml = `<option value="0">✨ ให้ระบบเลือกคิวว่างให้อัตโนมัติ (แนะนำ)</option>`;
-            availableCols.forEach((c, idx) => {
-                staffOptionsHtml += `<option value="${c.col}">เตียง/ผู้ให้บริการ: ${c.staff}</option>`;
+            // Set Modal Theme & Text
+            document.getElementById('modal-header-bar').className = `bg-gradient-to-r ${meta.gradient} text-white p-5 relative`;
+            document.getElementById('modal-svc-icon').innerHTML = `<i class="fa-solid ${meta.icon}"></i>`;
+            document.getElementById('modal-svc-title').innerText = `บริการ${serviceName}`;
+            document.getElementById('modal-time-subtitle').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> รอบเวลา ${timeStr} - ${END_TIME_MAP[timeStr]} น. • 29 ต.ค. 2570`;
+            document.getElementById('modal-free-badge').innerText = `ว่าง ${availableCols.length} ช่องบริการ`;
+
+            document.getElementById('modal-input-name').value = savedUser.name || '';
+            document.getElementById('modal-input-tel').value = savedUser.tel || '';
+            document.getElementById('modal-selected-col').value = '0';
+
+            // Build Staff / Bed Chips
+            let chipsHtml = `
+                <button type="button" onclick="selectModalColChip(this, 0)" class="col-chip col-span-2 p-2.5 rounded-xl border-2 border-emerald-600 bg-emerald-50 text-emerald-900 text-xs font-extrabold flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> ให้ระบบเลือกเตียงว่างให้อัตโนมัติ (แนะนำ)
+                </button>`;
+
+            availableCols.forEach(c => {
+                chipsHtml += `
+                <button type="button" onclick="selectModalColChip(this, ${c.col})" class="col-chip p-2.5 rounded-xl border border-slate-200 bg-white hover:border-emerald-400 text-slate-700 text-xs font-bold flex items-center gap-2 transition truncate">
+                    <i class="fa-solid fa-user-nurse text-emerald-600"></i>
+                    <span class="truncate">${c.staff}</span>
+                </button>`;
             });
+            document.getElementById('modal-staff-chips').innerHTML = chipsHtml;
 
-            Swal.fire({
-                title: `<span class="text-lg font-extrabold text-emerald-800">จองคิว: ${serviceName}</span>`,
-                html: `
-                    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 mb-4 text-left">
-                        <p class="text-xs text-emerald-800 font-bold"><i class="fa-regular fa-calendar-check mr-1"></i> วันภูมิปัญญาฯ: 29 ตุลาคม 2570</p>
-                        <p class="text-sm text-emerald-900 font-black mt-0.5"><i class="fa-regular fa-clock mr-1"></i> รอบเวลา: ${timeStr} - ${END_TIME_MAP[timeStr]} น.</p>
-                    </div>
-
-                    <div class="text-left mb-3">
-                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ - นามสกุล (หรือชื่อเล่น) <span class="text-red-500">*</span></label>
-                        <input id="swal-wisdom-name" type="text" value="${savedUser.name || ''}" class="w-full border-2 border-slate-200 rounded-xl p-3 text-sm font-bold focus:border-emerald-500 outline-none" placeholder="ระบุชื่อของท่าน">
-                    </div>
-
-                    <div class="text-left mb-3">
-                        <label class="block text-xs font-bold text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ <span class="text-red-500">*</span></label>
-                        <input id="swal-wisdom-tel" type="tel" maxlength="10" value="${savedUser.tel || ''}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full border-2 border-slate-200 rounded-xl p-3 text-sm font-bold focus:border-emerald-500 outline-none" placeholder="08XXXXXXXX">
-                    </div>
-
-                    <div class="text-left">
-                        <label class="block text-xs font-bold text-slate-700 mb-1">เลือกช่องบริการ / ผู้ให้บริการ</label>
-                        <select id="swal-wisdom-col" class="w-full border-2 border-slate-200 rounded-xl p-2.5 text-xs font-bold text-slate-700 bg-white focus:border-emerald-500 outline-none">
-                            ${staffOptionsHtml}
-                        </select>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: '<i class="fa-solid fa-check-circle mr-1"></i> ยืนยันการจองคิว',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#059669',
-                cancelButtonColor: '#94a3b8',
-                preConfirm: () => {
-                    const name = document.getElementById('swal-wisdom-name').value.trim();
-                    const tel = document.getElementById('swal-wisdom-tel').value.trim();
-                    const col = document.getElementById('swal-wisdom-col').value;
-                    if (!name) {
-                        Swal.showValidationMessage('กรุณากรอกชื่อผู้เข้ารับบริการ');
-                        return false;
-                    }
-                    if (tel.length < 9) {
-                        Swal.showValidationMessage('กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (9-10 หลัก)');
-                        return false;
-                    }
-                    return { name, tel, col: parseInt(col, 10) };
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    submitWisdomBooking(timeStr, serviceName, result.value.name, result.value.tel, result.value.col);
-                }
-            });
+            document.getElementById('booking-modal').classList.remove('hidden');
         }
 
-        function submitWisdomBooking(timeStr, serviceName, name, tel, col) {
-            // จำชื่อและเบอร์ไว้ในเครื่องเผื่อจองให้ตัวเองซ้ำ
+        function selectModalColChip(btnEl, colNum) {
+            document.getElementById('modal-selected-col').value = colNum;
+            document.querySelectorAll('.col-chip').forEach(el => {
+                el.classList.remove('border-2', 'border-emerald-600', 'bg-emerald-50', 'text-emerald-900', 'font-extrabold');
+                el.classList.add('border', 'border-slate-200', 'bg-white', 'text-slate-700', 'font-bold');
+            });
+            btnEl.classList.remove('border', 'border-slate-200', 'bg-white', 'text-slate-700', 'font-bold');
+            btnEl.classList.add('border-2', 'border-emerald-600', 'bg-emerald-50', 'text-emerald-900', 'font-extrabold');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function confirmModalBooking() {
+            const name = document.getElementById('modal-input-name').value.trim();
+            const tel = document.getElementById('modal-input-tel').value.trim();
+            const col = parseInt(document.getElementById('modal-selected-col').value, 10) || 0;
+
+            if (!name) {
+                Swal.fire({ icon: 'warning', title: 'กรุณากรอกชื่อ', text: 'โปรดระบุชื่อหรือชื่อเล่นของผู้รับบริการครับ', confirmButtonColor: '#059669' });
+                return;
+            }
+            if (tel.length < 9) {
+                Swal.fire({ icon: 'warning', title: 'เบอร์โทรศัพท์ไม่ครบ', text: 'โปรดระบุเบอร์โทรศัพท์ติดต่อ 9-10 หลักครับ', confirmButtonColor: '#059669' });
+                return;
+            }
+
             localStorage.setItem('wisdom_last_user', JSON.stringify({ name, tel }));
+            closeBookingModal();
 
             Swal.fire({
-                title: 'กำลังบันทึกคิว...',
-                text: 'ระบบกำลังตรวจสอบและล็อกคิวให้ท่านแบบ Realtime',
+                title: 'กำลังล็อกคิวให้ท่าน...',
+                html: `<p class="text-xs text-slate-500">บริการ <b>${activeModalContext.service}</b> รอบเวลา <b>${activeModalContext.time} น.</b></p>`,
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading(); }
             });
 
             const payload = {
                 action: 'book_wisdom_queue',
-                time: timeStr,
-                service: serviceName,
+                time: activeModalContext.time,
+                service: activeModalContext.service,
                 name: name,
                 tel: tel,
                 col: col
@@ -510,53 +950,44 @@
                 if (res.status === 'success') {
                     if (res.dashboard) {
                         wisdomData = res.dashboard;
-                        renderDashboard();
+                        renderAll();
                     } else {
                         fetchFirebaseData(false);
                     }
 
-                    // บันทึกบัตรคิวไว้ในเครื่อง
+                    // Save Digital Ticket
                     const tickets = JSON.parse(localStorage.getItem('wisdom_my_tickets') || '[]');
-                    tickets.unshift({
+                    const ticketObj = {
                         name: res.booked.name,
                         tel: res.booked.tel,
                         service: res.booked.service,
                         time: res.booked.time,
+                        endTime: END_TIME_MAP[res.booked.time] || '',
                         staff: res.booked.staff,
                         bookedAt: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
-                    });
+                    };
+                    tickets.unshift(ticketObj);
                     localStorage.setItem('wisdom_my_tickets', JSON.stringify(tickets));
                     updateMyTicketBadge();
 
-                    // ส่งข้อความเข้าแชท LINE ทันทีหากเปิดผ่าน LINE LIFF
+                    // Send LINE LIFF Message if opened inside LINE
                     if (typeof liff !== 'undefined' && liff.isInClient()) {
-                        const msg = `[บัตรคิววันภูมิปัญญาการแพทย์แผนไทยฯ]\n📅 วันที่: 29 ตุลาคม 2570\n⏰ เวลา: ${res.booked.time} - ${END_TIME_MAP[res.booked.time]} น.\n🌿 บริการ: ${res.booked.service}\n👤 ชื่อ: ${res.booked.name}\n📞 โทร: ${res.booked.tel}\n🛏️ ช่องบริการ: ${res.booked.staff}\n\n*กรุณามาก่อนเวลานัด 10-15 นาทีครับ*`;
+                        const msg = `🎫 บัตรคิววันภูมิปัญญาการแพทย์แผนไทยฯ\n📅 29 ตุลาคม 2570\n⏰ รอบเวลา: ${ticketObj.time} - ${ticketObj.endTime} น.\n🌿 บริการ: ${ticketObj.service}\n🛏️ ช่องบริการ: ${ticketObj.staff}\n👤 ผู้จอง: คุณ${ticketObj.name} (${ticketObj.tel})\n\n*กรุณามาถึงจุดลงทะเบียนก่อนเวลานัด 10 นาทีครับ*`;
                         liff.sendMessages([{ type: 'text', text: msg }]).catch(() => {});
                     }
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'จองคิวสำเร็จ!',
-                        html: `
-                            <div class="bg-emerald-50 border-2 border-dashed border-emerald-300 rounded-2xl p-4 text-left mt-2">
-                                <p class="text-xs font-bold text-emerald-700 text-center mb-2">🎫 บัตรคิววันภูมิปัญญาการแพทย์แผนไทยฯ</p>
-                                <p class="text-sm font-bold text-slate-800">👤 ชื่อ: <span class="text-emerald-700">${res.booked.name}</span></p>
-                                <p class="text-sm font-bold text-slate-800 mt-1">🌿 บริการ: <span class="text-emerald-700">${res.booked.service}</span></p>
-                                <p class="text-sm font-bold text-slate-800 mt-1">⏰ เวลา: <span class="text-emerald-700">${res.booked.time} - ${END_TIME_MAP[res.booked.time]} น.</span></p>
-                                <p class="text-xs font-semibold text-slate-600 mt-1">🛏️ ผู้ให้บริการ/เตียง: ${res.booked.staff}</p>
-                                <p class="text-[11px] text-center text-slate-400 mt-3">*สามารถแคปหน้าจอนี้ไว้เป็นหลักฐานการจองคิวได้ทันที*</p>
-                            </div>
-                        `,
-                        confirmButtonText: 'ตกลง',
-                        confirmButtonColor: '#059669'
-                    });
-
+                    showDigitalTicketPopup(ticketObj);
                 } else {
-                    fetchFirebaseData(false);
+                    if (res.dashboard) {
+                        wisdomData = res.dashboard;
+                        renderAll();
+                    } else {
+                        fetchFirebaseData(false);
+                    }
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'ไม่สามารถจองคิวได้',
-                        text: res.message || 'คิวในรอบเวลานี้เพิ่งถูกจองเต็มไป กรุณาเลือกรอบเวลาใหม่ครับ',
+                        icon: 'info',
+                        title: 'คิวเพิ่งถูกจองเต็ม',
+                        text: res.message || 'ขออภัย คิวในรอบเวลานี้เพิ่งถูกจองไปเมื่อสักครู่ กรุณาเลือกรอบเวลาใหม่ครับ',
                         confirmButtonColor: '#059669'
                     });
                 }
@@ -571,7 +1002,65 @@
             });
         }
 
-        // 🎫 แสดงรายการคิวที่จองไว้ในเครื่องนี้
+        // ==========================================
+        // 🎫 5. E-TICKET DIGITAL PASS & MY QUEUES
+        // ==========================================
+        function showDigitalTicketPopup(t) {
+            Swal.fire({
+                title: '',
+                html: `
+                    <div class="text-center mb-3">
+                        <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-2 text-2xl shadow-inner">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-800">จองคิวสำเร็จเรียบร้อย!</h3>
+                        <p class="text-xs text-slate-500">โปรดแคปหน้าจอบัตรคิวนี้ไว้แสดงต่อเจ้าหน้าที่หน้างาน</p>
+                    </div>
+
+                    <div class="relative bg-gradient-to-b from-emerald-900 to-teal-900 text-white rounded-3xl p-5 text-left shadow-xl overflow-hidden border border-emerald-700">
+                        <div class="ticket-notch-l"></div>
+                        <div class="ticket-notch-r"></div>
+
+                        <div class="flex items-center justify-between border-b border-white/15 pb-3 mb-3">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-amber-300 block">SADAO WELLNESS CLINIC</span>
+                                <span class="text-xs font-extrabold text-emerald-100">วันภูมิปัญญาการแพทย์แผนไทยฯ (29 ต.ค. 70)</span>
+                            </div>
+                            <span class="bg-amber-400 text-slate-950 text-xs font-black px-2.5 py-1 rounded-lg">CONFIRMED</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 my-4">
+                            <div class="bg-white/10 rounded-2xl p-3">
+                                <p class="text-[10px] text-emerald-200 font-semibold">หัตถการที่รับบริการ</p>
+                                <p class="text-base font-black text-white mt-0.5">${t.service}</p>
+                            </div>
+                            <div class="bg-white/10 rounded-2xl p-3">
+                                <p class="text-[10px] text-emerald-200 font-semibold">รอบเวลานัดหมาย</p>
+                                <p class="text-base font-black text-amber-300 mt-0.5">${t.time} - ${t.endTime} น.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5 text-xs border-t border-dashed border-white/20 pt-3">
+                            <div class="flex justify-between">
+                                <span class="text-emerald-200">ผู้รับบริการ:</span>
+                                <span class="font-extrabold text-white">คุณ${t.name}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-emerald-200">เบอร์โทรศัพท์:</span>
+                                <span class="font-bold text-white">${t.tel}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-emerald-200">เตียง / ผู้ให้บริการ:</span>
+                                <span class="font-extrabold text-amber-300">${t.staff}</span>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                confirmButtonText: 'เสร็จสิ้น',
+                confirmButtonColor: '#059669'
+            });
+        }
+
         function updateMyTicketBadge() {
             const tickets = JSON.parse(localStorage.getItem('wisdom_my_tickets') || '[]');
             const badge = document.getElementById('my-ticket-badge');
@@ -588,29 +1077,31 @@
             if (tickets.length === 0) {
                 Swal.fire({
                     icon: 'info',
-                    title: 'ยังไม่มีประวัติการจองในเครื่องนี้',
-                    text: 'ท่านสามารถแตะเลือกบริการที่ขึ้นสถานะ "ว่าง" เพื่อจองคิวได้ทันทีครับ',
+                    title: 'ยังไม่มีบัตรคิวในเครื่องนี้',
+                    text: 'แตะเลือกบริการที่ขึ้นสถานะ "ว่าง" ในตารางเพื่อจองคิวได้ทันทีครับ',
                     confirmButtonColor: '#059669'
                 });
                 return;
             }
 
-            let listHtml = `<div class="space-y-2.5 max-h-80 overflow-y-auto text-left pr-1">`;
-            tickets.forEach((t, i) => {
+            let listHtml = `<div class="space-y-3 max-h-96 overflow-y-auto text-left pr-1">`;
+            tickets.forEach((t) => {
                 listHtml += `
-                <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-3">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="bg-emerald-600 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-lg">${t.time} น.</span>
-                        <span class="text-xs font-extrabold text-emerald-800">${t.service}</span>
+                <div class="bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-2xl p-4 shadow-md relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="bg-amber-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-lg">
+                            <i class="fa-regular fa-clock mr-1"></i>${t.time} - ${t.endTime || END_TIME_MAP[t.time]} น.
+                        </span>
+                        <span class="text-sm font-extrabold text-emerald-200">${t.service}</span>
                     </div>
-                    <p class="text-xs font-bold text-slate-800">👤 คุณ${t.name} (${t.tel})</p>
-                    <p class="text-[11px] text-slate-500 mt-0.5">🛏️ ช่องบริการ: ${t.staff}</p>
+                    <p class="text-xs font-bold text-white">👤 คุณ${t.name} <span class="text-emerald-200 font-normal">(${t.tel})</span></p>
+                    <p class="text-xs font-semibold text-amber-300 mt-1">🛏️ ช่องบริการ: ${t.staff}</p>
                 </div>`;
             });
             listHtml += `</div>`;
 
             Swal.fire({
-                title: '🎫 บัตรคิวที่จองไว้',
+                title: '<span class="text-lg font-extrabold text-slate-800">🎫 บัตรคิวของฉัน (29 ต.ค. 2570)</span>',
                 html: listHtml,
                 confirmButtonText: 'ปิดหน้าต่าง',
                 confirmButtonColor: '#059669'
