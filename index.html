@@ -26,97 +26,68 @@
             background-color: var(--bg-sage);
             background-image: 
                 radial-gradient(at 10% 10%, rgba(104, 178, 144, 0.18) 0px, transparent 55%),
-                radial-gradient(at 90% 90%, rgba(255, 255, 255, 0.6) 0px, transparent 55%);
+                radial-gradient(at 90% 90%, rgba(255, 255, 255, 0.65) 0px, transparent 55%);
             color: var(--charcoal);
             margin: 0;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* App Shell Card (Matches Reference Soft Container) */
         .app-shell {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 24px 60px -15px rgba(30, 45, 38, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 20px 50px -15px rgba(30, 45, 38, 0.07);
         }
 
-        /* Soft Bento Stat Cards ("Today's stats" style) */
         .stat-card-soft {
             background-color: var(--surface-soft);
-            border-radius: 28px;
-            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1.5px solid transparent;
-        }
-        .stat-card-soft:hover {
-            transform: translateY(-3px);
-            background-color: #ebf3ef;
-            box-shadow: 0 12px 24px -8px rgba(75, 148, 115, 0.15);
-        }
-        .stat-card-active {
-            background: linear-gradient(145deg, #74bc9a 0%, #569e7d 100%) !important;
-            color: #ffffff !important;
-            box-shadow: 0 16px 32px -10px rgba(86, 158, 125, 0.45);
-            transform: translateY(-3px);
+            border-radius: 26px;
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.25s ease;
         }
 
-        /* Clean List Row ("Personal information >" style) */
-        .clean-list-row {
-            background-color: var(--surface-soft);
-            border-radius: 22px;
-            transition: all 0.22s ease;
-            border: 1.5px solid transparent;
-        }
-        .clean-list-row.available:hover {
-            background-color: #ffffff;
-            border-color: #b7decb;
-            transform: translateX(3px);
-            box-shadow: 0 8px 20px -6px rgba(30, 45, 38, 0.07);
-        }
-
-        /* Time Pill Scroller */
-        .time-pill {
-            border-radius: 18px;
-            transition: all 0.2s ease;
-        }
-        .time-pill.active {
-            background-color: var(--charcoal);
-            color: #ffffff;
-            box-shadow: 0 8px 18px -4px rgba(30, 45, 38, 0.25);
-        }
-
-        /* Circular SVG Gauge Transition */
         .ring-progress {
             transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
 
-        /* Live Dot */
         @keyframes softPulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.45; transform: scale(1.2); }
+            50% { opacity: 0.4; transform: scale(1.25); }
         }
         .live-dot { animation: softPulse 2s infinite ease-in-out; }
 
-        /* Modal Backdrop */
+        /* ปุ่มจองคิวในตาราง */
+        .slot-btn-free {
+            background: linear-gradient(145deg, #68b290 0%, #4b9473 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px -2px rgba(75, 148, 115, 0.35);
+            transition: all 0.18s ease;
+        }
+        .slot-btn-free:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -3px rgba(75, 148, 115, 0.45);
+            filter: brightness(1.04);
+        }
+        .slot-btn-free:active {
+            transform: scale(0.95);
+        }
+
         .modal-backdrop {
             background: rgba(30, 45, 38, 0.45);
             backdrop-filter: blur(8px);
         }
     </style>
 </head>
-<body class="min-h-screen py-3 sm:py-7 px-2.5 sm:px-6 pb-28">
+<body class="min-h-screen py-3 sm:py-6 px-2 sm:px-6 pb-16">
 
-    <!-- ==================== 🌿 MAIN CONTAINER (SOFT MINIMALIST SHELL) ==================== -->
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-5xl mx-auto">
 
-        <!-- Top Minimal Header Bar -->
-        <header class="flex flex-wrap items-center justify-between gap-3 px-2 sm:px-4 mb-4 sm:mb-6">
-            <div class="flex items-center gap-3.5">
+        <!-- ==================== 🌿 HEADER ==================== -->
+        <header class="flex flex-wrap items-center justify-between gap-3 px-2 sm:px-3 mb-4 sm:mb-6">
+            <div class="flex items-center gap-3">
                 <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-[20px] bg-white p-1.5 shadow-sm border border-white flex items-center justify-center shrink-0">
                     <img src="https://lh3.googleusercontent.com/d/1sxp0wrhV7MKhr2_6nOLQsj-jVddMmnzR" 
                          alt="โรงพยาบาลสะเดา" 
@@ -124,262 +95,197 @@
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center gap-1.5 bg-white/80 text-[#4b9473] text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+                        <span class="inline-flex items-center gap-1.5 bg-white/90 text-[#4b9473] text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
                             <span class="w-2 h-2 rounded-full bg-[#68b290] live-dot"></span>
                             <span id="sync-status-text">Realtime Queue</span>
                         </span>
-                        <span class="text-[11px] font-semibold text-[#64786f] hidden sm:inline">• 29 ตุลาคม 2570</span>
+                        <span class="text-[11px] font-bold text-[#4b9473] bg-[#e2f1ea] px-2.5 py-0.5 rounded-full">29 ต.ค. 2570</span>
                     </div>
-                    <h1 class="text-lg sm:text-2xl font-extrabold text-[#1e2d26] tracking-tight leading-snug mt-0.5">
+                    <h1 class="text-base sm:text-2xl font-extrabold text-[#1e2d26] tracking-tight leading-snug mt-1">
                         วันภูมิปัญญาการแพทย์แผนไทยแห่งชาติ
                     </h1>
-                    <p class="text-xs text-[#64786f] font-medium">กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก โรงพยาบาลสะเดา</p>
+                    <p class="text-[11px] sm:text-xs text-[#64786f] font-medium">กลุ่มงานการแพทย์แผนไทยและการแพทย์ทางเลือก โรงพยาบาลสะเดา</p>
                 </div>
             </div>
 
-            <!-- Right Top Action Pills -->
+            <!-- ปุ่มคิวของฉัน & รีเฟรช -->
             <div class="flex items-center gap-2 ml-auto">
-                <button onclick="openMyTicketsModal()" class="bg-white hover:bg-[#f4f8f6] text-[#1e2d26] px-4 py-2.5 rounded-full text-xs font-bold shadow-sm border border-white active:scale-95 transition flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-[#e2f1ea] text-[#4b9473] flex items-center justify-center">
-                        <i class="fa-solid fa-ticket text-[11px]"></i>
-                    </span>
+                <button onclick="openMyTicketsModal()" class="bg-[#1e2d26] hover:bg-[#2c4238] text-white px-3.5 py-2 rounded-full text-xs font-bold shadow-sm active:scale-95 transition flex items-center gap-2">
+                    <i class="fa-solid fa-ticket text-[#68b290]"></i>
                     <span>คิวของฉัน</span>
-                    <span id="my-ticket-badge" class="bg-[#1e2d26] text-white px-2 py-0.5 rounded-full text-[10px] hidden">0</span>
+                    <span id="my-ticket-badge" class="bg-[#68b290] text-white px-1.5 py-0.2 rounded-full text-[10px] hidden">0</span>
                 </button>
-                <button onclick="forceSyncFromSheet()" class="w-10 h-10 rounded-full bg-white hover:bg-[#f4f8f6] text-[#1e2d26] shadow-sm border border-white flex items-center justify-center active:scale-90 transition" title="อัปเดตข้อมูลล่าสุด">
+                <button onclick="forceSyncFromSheet()" class="w-9 h-9 rounded-full bg-white hover:bg-[#f4f8f6] text-[#1e2d26] shadow-sm border border-white flex items-center justify-center active:scale-90 transition" title="ดึงข้อมูลล่าสุด">
                     <i class="fa-solid fa-rotate text-xs" id="refresh-icon"></i>
                 </button>
             </div>
         </header>
 
-        <!-- ==================== 📱 SPLIT-PANEL BENTO DASHBOARD ==================== -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
+        <!-- ==================== 📊 SECTION 1: TODAY'S STATS (BENTO SUMMARY) ==================== -->
+        <section class="app-shell rounded-[32px] p-4 sm:p-6 mb-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3.5 px-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-[#4b9473]">Today's Stats</span>
+                    <span class="text-xs text-[#788b82] font-semibold">• ยอดคิวว่างคงเหลือรายบริการ</span>
+                </div>
+                <div class="text-xs font-extrabold text-[#1e2d26] bg-[#e2f1ea] px-3 py-1 rounded-full">
+                    ว่างรวมทั้งหมด <span id="hero-total-free" class="text-[#4b9473] text-sm">-</span> / <span id="hero-total-cap">-</span> คิว
+                </div>
+            </div>
 
-            <!-- LEFT COLUMN (5 Cols): "Today's stats" Bento 2x2 + Overall Circular Ring -->
-            <section class="lg:col-span-5 app-shell rounded-[36px] p-5 sm:p-7 lg:sticky lg:top-6">
-                
-                <!-- Section Header -->
-                <div class="flex items-center justify-between mb-5">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-[#68b290]">Today's Queue Stats</p>
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-[#1e2d26]">ภาพรวมคิวว่างวันนี้</h2>
-                    </div>
-                    <button onclick="setFilterService('ALL')" id="btn-filter-all" class="text-xs font-bold px-3.5 py-1.5 rounded-full bg-[#1e2d26] text-white transition">
-                        ทุกบริการ
-                    </button>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5" id="summary-cards-container">
+                <div class="h-24 rounded-[24px] bg-[#f4f8f6] animate-pulse"></div>
+                <div class="h-24 rounded-[24px] bg-[#f4f8f6] animate-pulse"></div>
+                <div class="h-24 rounded-[24px] bg-[#f4f8f6] animate-pulse"></div>
+                <div class="h-24 rounded-[24px] bg-[#f4f8f6] animate-pulse"></div>
+            </div>
+        </section>
+
+        <!-- ==================== 📅 SECTION 2: OVERVIEW TABLE (ตารางภาพรวมเข้าใจง่าย) ==================== -->
+        <section class="app-shell rounded-[32px] p-3.5 sm:p-6">
+            
+            <!-- ส่วนหัวตาราง + ตัวกรองช่วงเวลา -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 px-1">
+                <div>
+                    <h2 class="text-base sm:text-xl font-extrabold text-[#1e2d26] flex items-center gap-2">
+                        <i class="fa-solid fa-table-cells text-[#68b290]"></i>
+                        <span>ตารางคิวว่างแยกตามเวลาและบริการ</span>
+                    </h2>
+                    <p class="text-[11px] sm:text-xs text-[#788b82] font-medium mt-0.5">
+                        แตะปุ่มสีเขียว <span class="inline-block bg-[#68b290] text-white text-[10px] font-bold px-2 py-0.2 rounded-full">ว่าง</span> ในช่องเวลาที่ต้องการเพื่อจองคิวทันที (จัดคิวอัตโนมัติ)
+                    </p>
                 </div>
 
-                <!-- 2x2 Bento Grid for 4 Services (Matches "Step to walk / Cal burn / Kilo" cards) -->
-                <div class="grid grid-cols-2 gap-3.5 mb-4" id="summary-cards-container">
-                    <div class="h-36 rounded-[28px] bg-[#f4f8f6] animate-pulse"></div>
-                    <div class="h-36 rounded-[28px] bg-[#f4f8f6] animate-pulse"></div>
-                    <div class="h-36 rounded-[28px] bg-[#f4f8f6] animate-pulse"></div>
-                    <div class="h-36 rounded-[28px] bg-[#f4f8f6] animate-pulse"></div>
-                </div>
-
-                <!-- Overall Average / Total Circular Gauge Card (Matches "Kilo / Average" ring card) -->
-                <div class="stat-card-soft p-4 sm:p-5 flex items-center justify-between">
-                    <div>
-                        <span class="text-xs font-bold text-[#788b82] block">สถานะคิวว่างรวมทั้งหมด</span>
-                        <div class="flex items-baseline gap-1.5 mt-1">
-                            <span class="text-3xl font-extrabold text-[#1e2d26]" id="hero-total-free">-</span>
-                            <span class="text-xs font-bold text-[#788b82]">/ <span id="hero-total-cap">-</span> คิว</span>
-                        </div>
-                        <p class="text-[11px] text-[#4b9473] font-semibold mt-1 flex items-center gap-1">
-                            <i class="fa-solid fa-circle-check"></i> ไม่ต้องใช้เลขบัตรประชาชน
-                        </p>
-                    </div>
-
-                    <!-- Circular Donut Gauge -->
-                    <div class="relative w-20 h-20 flex items-center justify-center shrink-0">
-                        <svg class="w-20 h-20" viewBox="0 0 80 80">
-                            <circle cx="40" cy="40" r="32" fill="none" stroke="#dce9e2" stroke-width="8"></circle>
-                            <circle id="overall-ring-circle" class="ring-progress" cx="40" cy="40" r="32" fill="none" stroke="#68b290" stroke-width="8" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201"></circle>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                            <span class="text-xs font-extrabold text-[#1e2d26]" id="overall-ring-pct">0%</span>
-                            <span class="text-[9px] font-bold text-[#788b82]">ว่าง</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Filter Toggle ("เฉพาะรอบที่ว่าง") -->
-                <div class="mt-4 pt-4 border-t border-slate-200/60 flex items-center justify-between px-1">
-                    <span class="text-xs font-bold text-[#495a52] flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-[#68b290]"></i> ซ่อนรอบเวลาที่คิวเต็มแล้ว
-                    </span>
-                    <label class="inline-flex items-center cursor-pointer">
+                <div class="flex items-center justify-between sm:justify-end gap-2.5">
+                    <!-- สวิตช์ซ่อนรอบเต็ม -->
+                    <label class="inline-flex items-center gap-1.5 cursor-pointer select-none bg-[#f4f8f6] px-3 py-1.5 rounded-full border border-slate-200/60">
                         <input type="checkbox" id="toggle-free-only" class="sr-only peer" onchange="toggleFreeOnly(this.checked)">
-                        <div class="w-11 h-6 bg-[#dce9e2] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all relative peer-checked:bg-[#68b290]"></div>
+                        <div class="w-8 h-4 bg-[#dce9e2] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all relative peer-checked:bg-[#68b290]"></div>
+                        <span class="text-[11px] font-bold text-[#495a52]">เฉพาะรอบที่ว่าง</span>
                     </label>
-                </div>
 
-            </section>
-
-            <!-- RIGHT COLUMN (7 Cols): Clean List Schedule & Time Selector ("Settings / List" style) -->
-            <section class="lg:col-span-7 app-shell rounded-[36px] p-5 sm:p-7">
-
-                <!-- Top Bar of Right Panel -->
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-[#68b290]" id="right-panel-subtitle">Available Time Slots</p>
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-[#1e2d26]" id="right-panel-title">เลือกรอบเวลารับบริการ</h2>
-                    </div>
-
-                    <!-- Period Switcher Pills -->
-                    <div class="inline-flex bg-[#f4f8f6] p-1 rounded-2xl border border-slate-200/50">
-                        <button onclick="setFilterPeriod('ALL')" id="period-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-[#1e2d26] shadow-sm transition">
+                    <!-- ปุ่มกรอง เช้า / บ่าย -->
+                    <div class="inline-flex bg-[#f4f8f6] p-1 rounded-full border border-slate-200/60">
+                        <button onclick="setFilterPeriod('ALL')" id="period-all" class="px-3 py-1 rounded-full text-[11px] font-bold bg-[#1e2d26] text-white shadow-sm transition">
                             ทั้งหมด
                         </button>
-                        <button onclick="setFilterPeriod('morning')" id="period-morning" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#788b82] hover:text-[#1e2d26] transition">
+                        <button onclick="setFilterPeriod('morning')" id="period-morning" class="px-3 py-1 rounded-full text-[11px] font-semibold text-[#788b82] hover:text-[#1e2d26] transition">
                             เช้า
                         </button>
-                        <button onclick="setFilterPeriod('afternoon')" id="period-afternoon" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#788b82] hover:text-[#1e2d26] transition">
+                        <button onclick="setFilterPeriod('afternoon')" id="period-afternoon" class="px-3 py-1 rounded-full text-[11px] font-semibold text-[#788b82] hover:text-[#1e2d26] transition">
                             บ่าย
                         </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Horizontal Time Quick-Jump Scroller -->
-                <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-3 mb-4 border-b border-slate-100" id="time-Jump-scroller">
-                    <!-- เติมปุ่มเวลาด้วย JS -->
-                </div>
+            <!-- คำอธิบายสัญลักษณ์สี (Legend) -->
+            <div class="flex flex-wrap items-center gap-4 text-[11px] font-semibold text-[#64786f] bg-[#f4f8f6] px-4 py-2.5 rounded-2xl mb-3">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-md bg-[#68b290] inline-block"></span>
+                    <b class="text-[#1e2d26]">ว่าง (กดจองได้)</b>
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-md bg-red-100 border border-red-200 inline-block"></span>
+                    <span>เต็มแล้ว</span>
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-md bg-slate-200 inline-block"></span>
+                    <span>พัก / ไม่รับคิว</span>
+                </span>
+            </div>
 
-                <!-- Dynamic Slots Content (Clean List Rows OR Matrix View) -->
-                <div id="slots-container" class="space-y-5">
-                    <div class="py-16 text-center">
-                        <div class="w-12 h-12 rounded-2xl bg-[#e2f1ea] text-[#4b9473] flex items-center justify-center mx-auto mb-3 text-xl">
-                            <i class="fa-solid fa-circle-notch fa-spin"></i>
-                        </div>
-                        <p class="font-bold text-[#1e2d26] text-sm">กำลังดึงตารางคิวแบบ Realtime...</p>
+            <!-- ตารางภาพรวม (ออกแบบให้พอดีทั้งจอมือถือและจอคอม) -->
+            <div id="table-overview-container" class="overflow-hidden rounded-[24px] border border-slate-200/80 bg-white">
+                <div class="py-16 text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-[#e2f1ea] text-[#4b9473] flex items-center justify-center mx-auto mb-3 text-xl">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i>
                     </div>
+                    <p class="font-bold text-[#1e2d26] text-sm">กำลังโหลดตารางคิวว่างแบบ Realtime...</p>
                 </div>
+            </div>
 
-            </section>
+        </section>
 
-        </div>
     </div>
 
-    <!-- ==================== 🖤 FLOATING BOTTOM PILL DOCK (Matches Reference Bottom Bar) ==================== -->
-    <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-[#1e2d26]/95 backdrop-blur-md text-white px-3 py-2 rounded-full shadow-2xl border border-white/10 flex items-center gap-1.5 sm:gap-2">
-        <button onclick="setViewMode('cards')" id="dock-btn-cards" class="px-4 py-2 rounded-full text-xs font-bold bg-[#68b290] text-white transition flex items-center gap-1.5">
-            <i class="fa-solid fa-layer-group"></i>
-            <span>จองคิวรายรอบ</span>
-        </button>
-        <button onclick="setViewMode('matrix')" id="dock-btn-matrix" class="px-4 py-2 rounded-full text-xs font-semibold text-slate-300 hover:text-white transition flex items-center gap-1.5">
-            <i class="fa-solid fa-table-cells-large"></i>
-            <span>ตารางรวม</span>
-        </button>
-        <div class="w-px h-5 bg-white/15 mx-0.5"></div>
-        <button onclick="openMyTicketsModal()" class="px-3.5 py-2 rounded-full text-xs font-semibold text-slate-300 hover:text-white transition flex items-center gap-1.5">
-            <i class="fa-solid fa-ticket text-[#68b290]"></i>
-            <span class="hidden sm:inline">บัตรคิว</span>
-        </button>
-    </nav>
-
-    <!-- ==================== 🛒 CLEAN MINIMAL BOOKING MODAL ==================== -->
+    <!-- ==================== 🛒 STREAMLINED AUTO-BOOKING MODAL (กรอกแค่ชื่อ + เบอร์โทร) ==================== -->
     <div id="booking-modal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4 modal-backdrop">
-        <div class="bg-white w-full max-w-md rounded-t-[36px] sm:rounded-[36px] shadow-2xl overflow-hidden max-h-[92vh] flex flex-col border border-white">
+        <div class="bg-white w-full max-w-md rounded-t-[34px] sm:rounded-[34px] shadow-2xl overflow-hidden flex flex-col border border-white">
             
-            <!-- Modal Top Header -->
+            <!-- Modal Header -->
             <div class="p-6 pb-4 bg-[#f4f8f6] border-b border-slate-100 relative">
                 <button onclick="closeBookingModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-white text-[#1e2d26] shadow-sm flex items-center justify-center hover:bg-slate-100 transition">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <div class="flex items-center gap-3.5">
-                    <div id="modal-svc-icon" class="w-13 h-13 w-12 h-12 rounded-[18px] bg-[#68b290] text-white flex items-center justify-center text-xl shadow-sm">
+                    <div id="modal-svc-icon" class="w-12 h-12 rounded-[18px] bg-[#68b290] text-white flex items-center justify-center text-xl shadow-sm">
                         <i class="fa-solid fa-spa"></i>
                     </div>
                     <div>
-                        <span class="text-[11px] font-bold text-[#4b9473] uppercase tracking-wider">Confirm Appointment</span>
-                        <h3 id="modal-svc-title" class="text-xl font-extrabold text-[#1e2d26] leading-tight">บริการนวดตัว</h3>
-                        <p id="modal-time-subtitle" class="text-xs text-[#788b82] font-semibold mt-0.5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-bold text-[#4b9473] uppercase tracking-wider">Auto Queue Assignment</span>
+                            <span id="modal-free-badge" class="text-[10px] font-extrabold text-[#4b9473] bg-[#e2f1ea] px-2 py-0.5 rounded-full">ว่าง 0 คิว</span>
+                        </div>
+                        <h3 id="modal-svc-title" class="text-xl font-extrabold text-[#1e2d26] leading-tight mt-0.5">บริการนวดตัว</h3>
+                        <p id="modal-time-subtitle" class="text-xs text-[#788b82] font-bold mt-0.5">
                             รอบเวลา 08:30 - 09:00 น.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Modal Form Body -->
-            <div class="p-6 overflow-y-auto space-y-4 flex-1">
-                <!-- 1. เลือกเตียง / ผู้ให้บริการ -->
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="text-xs font-bold text-[#1e2d26]">1. เลือกผู้ให้บริการ / ช่องบริการ</label>
-                        <span id="modal-free-badge" class="text-[11px] font-bold text-[#4b9473] bg-[#e2f1ea] px-2.5 py-0.5 rounded-full">
-                            ว่าง 0 คิว
-                        </span>
-                    </div>
-                    <div id="modal-staff-chips" class="grid grid-cols-2 gap-2"></div>
-                    <input type="hidden" id="modal-selected-col" value="0">
-                </div>
-
-                <!-- 2. ชื่อผู้รับบริการ -->
+            <!-- Modal Body (ไม่มีการเลือกผู้ให้บริการ จัดให้อัตโนมัติทันที) -->
+            <div class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-[#1e2d26] mb-1.5">
-                        2. ชื่อ - นามสกุล (หรือชื่อเล่น) <span class="text-red-500">*</span>
+                        1. ชื่อ - นามสกุล (หรือชื่อเล่น) <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="modal-input-name" 
-                           class="w-full bg-[#f4f8f6] border-2 border-transparent focus:border-[#68b290] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-[#1e2d26] outline-none transition"
-                           placeholder="ระบุชื่อของท่าน">
+                           class="w-full bg-[#f4f8f6] border-2 border-transparent focus:border-[#68b290] focus:bg-white rounded-2xl px-4 py-3.5 text-sm font-bold text-[#1e2d26] outline-none transition"
+                           placeholder="ระบุชื่อของผู้รับบริการ">
                 </div>
 
-                <!-- 3. เบอร์โทรศัพท์ -->
                 <div>
                     <label class="block text-xs font-bold text-[#1e2d26] mb-1.5">
-                        3. เบอร์โทรศัพท์ติดต่อ <span class="text-red-500">*</span>
+                        2. เบอร์โทรศัพท์ติดต่อ <span class="text-red-500">*</span>
                     </label>
                     <input type="tel" id="modal-input-tel" maxlength="10"
                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                           class="w-full bg-[#f4f8f6] border-2 border-transparent focus:border-[#68b290] focus:bg-white rounded-2xl px-4 py-3 text-sm font-bold text-[#1e2d26] tracking-wider outline-none transition"
+                           class="w-full bg-[#f4f8f6] border-2 border-transparent focus:border-[#68b290] focus:bg-white rounded-2xl px-4 py-3.5 text-sm font-bold text-[#1e2d26] tracking-wider outline-none transition"
                            placeholder="08XXXXXXXX">
+                </div>
+
+                <div class="bg-[#f4f8f6] rounded-2xl p-3 flex items-center gap-2.5 text-[11px] font-semibold text-[#4b9473]">
+                    <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                    <span>ระบบจะจัดสรรเตียงและผู้ให้บริการที่ว่างในรอบเวลานี้ให้โดยอัตโนมัติ</span>
                 </div>
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-5 pt-3 bg-white border-t border-slate-100 flex gap-2.5">
+            <div class="p-5 pt-2 bg-white flex gap-2.5">
                 <button onclick="closeBookingModal()" class="w-1/3 py-3.5 rounded-2xl font-bold text-xs text-[#788b82] bg-[#f4f8f6] hover:bg-slate-200/70 transition">
                     ยกเลิก
                 </button>
-                <button onclick="confirmModalBooking()" class="w-2/3 py-3.5 rounded-2xl font-extrabold text-xs sm:text-sm text-white bg-[#1e2d26] hover:bg-[#2c4238] shadow-lg active:scale-95 transition flex items-center justify-center gap-2">
-                    <span>ยืนยันการจองคิว</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                <button onclick="confirmModalBooking()" class="w-2/3 py-3.5 rounded-2xl font-extrabold text-sm text-white bg-[#1e2d26] hover:bg-[#2c4238] shadow-lg active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check-circle text-[#68b290]"></i>
+                    <span>ยืนยันจองคิว</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ==================== ⚙️ APPLICATION LOGIC ==================== -->
+    <!-- ==================== ⚙️ JAVASCRIPT ENGINE ==================== -->
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbys15Lk-RkZFyQBcLN0r8qTqTnxrtmMEuVYeVWYqWAD5hxIftDC1NfYcD5U1Lp57pIn/exec";
         const FIREBASE_WISDOM_URL = "https://sadao-queue-999c3-default-rtdb.asia-southeast1.firebasedatabase.app/sadaoData/wisdomDay.json";
         const LIFF_ID = "2010086236-cSpA2YLB";
 
         const SERVICE_META = {
-            "นวดตัว": {
-                icon: "fa-spa",
-                sub: "คลายกล้ามเนื้อ ลดปวดเมื่อย",
-                accent: "#569e7d",
-                softBg: "#e2f1ea"
-            },
-            "นวดเท้า": {
-                icon: "fa-shoe-prints",
-                sub: "กดจุดสะท้อนฝ่าเท้า",
-                accent: "#d98a3c",
-                softBg: "#fdf0e2"
-            },
-            "พอกเข่า": {
-                icon: "fa-leaf",
-                sub: "สมุนไพรลดปวดข้อเข่า",
-                accent: "#3b8f88",
-                softBg: "#dff2f0"
-            },
-            "ฝังเข็ม": {
-                icon: "fa-yin-yang",
-                sub: "แพทย์แผนจีนปรับสมดุล",
-                accent: "#d65c75",
-                softBg: "#fce8ec"
-            }
+            "นวดตัว": { icon: "fa-spa", accent: "#569e7d", softBg: "#e2f1ea" },
+            "นวดเท้า": { icon: "fa-shoe-prints", accent: "#d98a3c", softBg: "#fdf0e2" },
+            "พอกเข่า": { icon: "fa-leaf", accent: "#3b8f88", softBg: "#dff2f0" },
+            "ฝังเข็ม": { icon: "fa-yin-yang", accent: "#d65c75", softBg: "#fce8ec" }
         };
 
         const END_TIME_MAP = {
@@ -390,12 +296,9 @@
         };
 
         let wisdomData = null;
-        let selectedServiceFilter = "ALL";
         let selectedPeriodFilter = "ALL";
-        let selectedTimeJump = "ALL";
         let showOnlyFree = false;
-        let currentViewMode = "cards";
-        let activeModalContext = { time: "", service: "", availableCols: [] };
+        let activeModalContext = { time: "", service: "", freeCount: 0 };
 
         window.onload = () => {
             updateMyTicketBadge();
@@ -461,410 +364,206 @@
         }
 
         // ==========================================
-        // 🎨 2. RENDER UI ("Today's stats" & Clean List)
+        // 🎨 2. RENDER SUMMARY & OVERVIEW TABLE
         // ==========================================
         function renderAll() {
             if (!wisdomData || !wisdomData.slots) return;
-            renderOverallGauge();
-            renderBentoStats();
-            renderTimeJumpScroller();
-            if (currentViewMode === "matrix") {
-                renderMatrixView();
-            } else {
-                renderCleanListSlots();
-            }
+            renderSummaryStats();
+            renderOverviewTable();
         }
 
-        function renderOverallGauge() {
-            const sum = wisdomData.summary || {};
-            let totalFree = 0;
-            let totalCap = 0;
-            ["นวดตัว", "นวดเท้า", "พอกเข่า", "ฝังเข็ม"].forEach(k => {
-                if (sum[k]) {
-                    totalFree += (sum[k].free || 0);
-                    totalCap += (sum[k].total || 0);
-                }
-            });
-            document.getElementById('hero-total-free').innerText = totalFree;
-            document.getElementById('hero-total-cap').innerText = totalCap;
-
-            const pct = totalCap > 0 ? Math.round((totalFree / totalCap) * 100) : 0;
-            const circumference = 201; // 2 * PI * 32
-            const offset = circumference - (pct / 100) * circumference;
-            const circle = document.getElementById('overall-ring-circle');
-            if (circle) circle.style.strokeDashoffset = offset;
-            document.getElementById('overall-ring-pct').innerText = `${pct}%`;
-        }
-
-        // วาดการ์ด 2x2 สไตล์ "Step to walk / Cal burn / Kilo" จากภาพตัวอย่าง
-        function renderBentoStats() {
+        function renderSummaryStats() {
             const sum = wisdomData.summary || {};
             const services = ["นวดตัว", "นวดเท้า", "พอกเข่า", "ฝังเข็ม"];
+            let totalFree = 0;
+            let totalCap = 0;
             let html = "";
 
             services.forEach(svc => {
                 const meta = SERVICE_META[svc];
                 const info = sum[svc] || { free: 0, total: 0 };
-                const pct = info.total > 0 ? Math.round((info.free / info.total) * 100) : 0;
-                const isSelected = (selectedServiceFilter === svc);
+                totalFree += (info.free || 0);
+                totalCap += (info.total || 0);
 
-                // วงแหวน SVG ขนาดเล็กในแต่ละการ์ด
+                const pct = info.total > 0 ? Math.round((info.free / info.total) * 100) : 0;
                 const r = 18;
-                const c = Math.round(2 * Math.PI * r); // ~113
+                const c = Math.round(2 * Math.PI * r);
                 const offset = c - (pct / 100) * c;
 
-                const cardClass = isSelected ? "stat-card-soft stat-card-active" : "stat-card-soft";
-                const titleColor = isSelected ? "text-white" : "text-[#1e2d26]";
-                const subColor = isSelected ? "text-emerald-50" : "text-[#788b82]";
-                const numColor = isSelected ? "text-white" : (info.free > 0 ? "text-[#1e2d26]" : "text-red-500");
-                const ringTrack = isSelected ? "rgba(255,255,255,0.25)" : "#dce9e2";
-                const ringStroke = isSelected ? "#ffffff" : meta.accent;
-
                 html += `
-                <div onclick="setFilterService('${svc}')" class="${cardClass} p-4 cursor-pointer flex flex-col justify-between min-h-[142px] relative select-none">
+                <div class="stat-card-soft p-3.5 sm:p-4 flex items-center justify-between">
                     <div>
-                        <div class="flex items-center justify-between gap-1">
-                            <span class="font-extrabold text-sm sm:text-base ${titleColor}">${svc}</span>
-                            <i class="fa-solid ${meta.icon} text-xs ${isSelected ? 'text-white/90' : 'text-[#68b290]'}"></i>
-                        </div>
-                        <p class="text-[10px] ${subColor} font-medium line-clamp-1 mt-0.5">${meta.sub}</p>
-                    </div>
-
-                    <div class="flex items-end justify-between mt-3">
-                        <div>
-                            <span class="text-[10px] font-semibold ${subColor} block">ว่าง / ทั้งหมด</span>
-                            <div class="flex items-baseline gap-1 mt-0.5">
-                                <span class="text-2xl font-extrabold leading-none ${numColor}">${info.free}</span>
-                                <span class="text-[11px] font-bold ${subColor}">/${info.total}</span>
-                            </div>
-                        </div>
-
-                        <!-- Circular Gauge Badge (Matches Reference Bottom-Right Circle) -->
-                        <div class="relative w-11 h-11 flex items-center justify-center shrink-0">
-                            <svg class="w-11 h-11" viewBox="0 0 44 44">
-                                <circle cx="22" cy="22" r="${r}" fill="none" stroke="${ringTrack}" stroke-width="4.5"></circle>
-                                <circle class="ring-progress" cx="22" cy="22" r="${r}" fill="none" stroke="${ringStroke}" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}"></circle>
-                            </svg>
-                            <span class="absolute text-[9px] font-extrabold ${titleColor}">${pct}%</span>
-                        </div>
-                    </div>
-                </div>`;
-            });
-
-            document.getElementById('summary-cards-container').innerHTML = html;
-
-            const btnAll = document.getElementById('btn-filter-all');
-            if (selectedServiceFilter === "ALL") {
-                btnAll.className = "text-xs font-bold px-3.5 py-1.5 rounded-full bg-[#1e2d26] text-white shadow-sm transition";
-                document.getElementById('right-panel-title').innerText = "ตารางคิวว่างทุกบริการ";
-            } else {
-                btnAll.className = "text-xs font-bold px-3.5 py-1.5 rounded-full bg-[#f4f8f6] text-[#788b82] hover:text-[#1e2d26] transition";
-                document.getElementById('right-panel-title').innerText = `รอบว่าง: บริการ${selectedServiceFilter}`;
-            }
-        }
-
-        function renderTimeJumpScroller() {
-            const slots = wisdomData.slots || [];
-            let html = `
-                <button onclick="setTimeJump('ALL')" class="time-pill px-3.5 py-2 text-xs font-bold shrink-0 ${selectedTimeJump === 'ALL' ? 'active' : 'bg-[#f4f8f6] text-[#788b82] hover:text-[#1e2d26]'}">
-                    ทุกรอบเวลา
-                </button>`;
-
-            slots.forEach(s => {
-                if (selectedPeriodFilter !== "ALL" && s.period !== selectedPeriodFilter) return;
-                const freeCount = selectedServiceFilter === "ALL"
-                    ? s.totalFree
-                    : (s.services[selectedServiceFilter] ? s.services[selectedServiceFilter].free : 0);
-
-                if (showOnlyFree && freeCount === 0) return;
-
-                const isActive = (selectedTimeJump === s.time);
-                const dotColor = freeCount > 0 ? (isActive ? 'bg-[#68b290]' : 'bg-[#68b290]') : 'bg-red-400';
-
-                html += `
-                <button onclick="setTimeJump('${s.time}')" class="time-pill px-3.5 py-2 text-xs font-bold shrink-0 flex items-center gap-1.5 ${isActive ? 'active' : 'bg-[#f4f8f6] text-[#1e2d26] hover:bg-[#e8f2ec]'}">
-                    <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span>
-                    <span>${s.time}</span>
-                </button>`;
-            });
-
-            document.getElementById('time-Jump-scroller').innerHTML = html;
-        }
-
-        // วาดรายการหัตถการสไตล์ "Personal information > / Remainder >" ในภาพตัวอย่าง
-        function renderCleanListSlots() {
-            const slots = wisdomData.slots || [];
-            const servicesOrder = selectedServiceFilter === "ALL"
-                ? ["นวดตัว", "นวดเท้า", "พอกเข่า", "ฝังเข็ม"]
-                : [selectedServiceFilter];
-
-            let html = "";
-            let countRendered = 0;
-
-            slots.forEach(slot => {
-                if (selectedPeriodFilter !== "ALL" && slot.period !== selectedPeriodFilter) return;
-                if (selectedTimeJump !== "ALL" && slot.time !== selectedTimeJump) return;
-
-                const freeInView = selectedServiceFilter === "ALL"
-                    ? slot.totalFree
-                    : (slot.services[selectedServiceFilter] ? slot.services[selectedServiceFilter].free : 0);
-
-                if (showOnlyFree && freeInView === 0) return;
-                countRendered++;
-
-                const endTime = END_TIME_MAP[slot.time] || "";
-                let rowsHtml = "";
-
-                servicesOrder.forEach(svcName => {
-                    const svcObj = (slot.services && slot.services[svcName]) ? slot.services[svcName] : { free: 0, total: 0, availableCols: [] };
-                    const meta = SERVICE_META[svcName];
-
-                    // 1. พัก / ไม่เปิดรับคิวในรอบนี้
-                    if (svcObj.total === 0) {
-                        rowsHtml += `
-                        <div class="clean-list-row px-4 py-3 flex items-center justify-between opacity-50 select-none">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full bg-slate-200/80 text-slate-400 flex items-center justify-center text-xs">
-                                    <i class="fa-solid ${meta.icon}"></i>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs sm:text-sm text-[#788b82]">${svcName}</p>
-                                    <p class="text-[10px] text-slate-400">พักรอบบริการ</p>
-                                </div>
-                            </div>
-                            <span class="text-[11px] font-bold text-slate-400 bg-slate-200/60 px-2.5 py-1 rounded-full">พัก</span>
-                        </div>`;
-                    }
-                    // 2. เต็มแล้ว
-                    else if (svcObj.free === 0) {
-                        rowsHtml += `
-                        <div class="clean-list-row px-4 py-3 flex items-center justify-between opacity-75 select-none">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full bg-red-50 text-red-400 flex items-center justify-center text-xs">
-                                    <i class="fa-solid ${meta.icon}"></i>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-xs sm:text-sm text-[#1e2d26]">${svcName}</p>
-                                    <p class="text-[10px] text-red-400 font-medium">จองครบ ${svcObj.total} คิวแล้ว</p>
-                                </div>
-                            </div>
-                            <span class="text-[11px] font-bold text-red-500 bg-red-50 px-3 py-1 rounded-full">เต็ม</span>
-                        </div>`;
-                    }
-                    // 3. ว่าง กดจองได้ (เหมือนแถว "Personal information >" ในภาพต้นแบบ)
-                    else {
-                        const encodedCols = encodeURIComponent(JSON.stringify(svcObj.availableCols || []));
-                        const staffPreview = (svcObj.availableCols || []).map(c => c.staff).join(', ');
-
-                        rowsHtml += `
-                        <div onclick="openBookingModal('${slot.time}', '${svcName}', '${encodedCols}')" 
-                             class="clean-list-row available px-4 py-3.5 flex items-center justify-between cursor-pointer group">
-                            <div class="flex items-center gap-3.5 min-w-0 pr-2">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm shrink-0 transition-transform group-hover:scale-105"
-                                     style="background-color: ${meta.softBg}; color: ${meta.accent};">
-                                    <i class="fa-solid ${meta.icon}"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-2">
-                                        <p class="font-extrabold text-sm text-[#1e2d26]">${svcName}</p>
-                                        <span class="text-[10px] font-bold text-[#4b9473] bg-[#e2f1ea] px-2 py-0.5 rounded-full">
-                                            ว่าง ${svcObj.free}/${svcObj.total}
-                                        </span>
-                                    </div>
-                                    <p class="text-[11px] text-[#788b82] truncate mt-0.5">
-                                        ผู้ให้บริการ: ${staffPreview}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Right Action Circle Arrow -->
-                            <div class="flex items-center gap-2 shrink-0">
-                                <span class="text-xs font-bold text-[#4b9473] hidden sm:inline group-hover:underline">จองคิว</span>
-                                <div class="w-8 h-8 rounded-full bg-white group-hover:bg-[#68b290] text-[#1e2d26] group-hover:text-white shadow-sm flex items-center justify-center transition-colors">
-                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                                </div>
-                            </div>
-                        </div>`;
-                    }
-                });
-
-                html += `
-                <div class="bg-white/90 rounded-[28px] p-4 sm:p-5 border border-slate-100 shadow-sm">
-                    <div class="flex items-center justify-between mb-3 px-1">
-                        <div class="flex items-center gap-2.5">
-                            <span class="bg-[#1e2d26] text-white font-extrabold text-xs sm:text-sm px-3 py-1 rounded-full">
-                                ${slot.time} น.
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-[11px]"
+                                  style="background-color: ${meta.softBg}; color: ${meta.accent};">
+                                <i class="fa-solid ${meta.icon}"></i>
                             </span>
-                            <span class="text-xs font-bold text-[#788b82]">ถึง ${endTime} น.</span>
+                            <span class="font-extrabold text-xs sm:text-sm text-[#1e2d26]">${svc}</span>
                         </div>
-                        <span class="text-xs font-extrabold ${freeInView > 0 ? 'text-[#4b9473]' : 'text-red-400'}">
-                            ${freeInView > 0 ? `ว่าง ${freeInView} คิว` : 'เต็ม'}
-                        </span>
+                        <div class="flex items-baseline gap-1 mt-2">
+                            <span class="text-xl sm:text-2xl font-extrabold leading-none ${info.free > 0 ? 'text-[#1e2d26]' : 'text-red-500'}">${info.free}</span>
+                            <span class="text-[11px] font-bold text-[#788b82]">/ ${info.total} คิว</span>
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        ${rowsHtml}
+
+                    <div class="relative w-11 h-11 flex items-center justify-center shrink-0">
+                        <svg class="w-11 h-11" viewBox="0 0 44 44">
+                            <circle cx="22" cy="22" r="${r}" fill="none" stroke="#dce9e2" stroke-width="4.5"></circle>
+                            <circle class="ring-progress" cx="22" cy="22" r="${r}" fill="none" stroke="${meta.accent}" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}"></circle>
+                        </svg>
+                        <span class="absolute text-[9px] font-extrabold text-[#1e2d26]">${pct}%</span>
                     </div>
                 </div>`;
             });
 
-            if (countRendered === 0) {
-                html = `
-                <div class="text-center py-12 bg-[#f4f8f6] rounded-[28px]">
-                    <p class="font-bold text-sm text-[#788b82]">ไม่มีรอบเวลาที่ตรงกับเงื่อนไขที่เลือก</p>
-                    <button onclick="resetFilters()" class="mt-3 text-xs font-bold bg-[#1e2d26] text-white px-4 py-2 rounded-full">
-                        รีเซ็ตตัวกรองทั้งหมด
-                    </button>
-                </div>`;
-            }
-
-            document.getElementById('slots-container').innerHTML = html;
+            document.getElementById('hero-total-free').innerText = totalFree;
+            document.getElementById('hero-total-cap').innerText = totalCap;
+            document.getElementById('summary-cards-container').innerHTML = html;
         }
 
-        // ตารางรวมทุกเวลา (Matrix View)
-        function renderMatrixView() {
+        function renderOverviewTable() {
             const slots = wisdomData.slots || [];
             const services = ["นวดตัว", "นวดเท้า", "พอกเข่า", "ฝังเข็ม"];
             let rowsHtml = "";
+            let visibleRows = 0;
 
             slots.forEach(slot => {
                 if (selectedPeriodFilter !== "ALL" && slot.period !== selectedPeriodFilter) return;
                 if (showOnlyFree && slot.totalFree === 0) return;
 
-                let cells = "";
+                // แถบคั่นพักเที่ยง
+                if (slot.time === "13:00" && selectedPeriodFilter === "ALL" && !showOnlyFree) {
+                    rowsHtml += `
+                    <tr class="bg-[#f4f8f6] border-y border-[#dce9e2]">
+                        <td colspan="5" class="py-2 text-center text-[11px] font-extrabold text-[#4b9473]">
+                            <i class="fa-solid fa-mug-hot mr-1"></i> พักรับประทานอาหารกลางวัน (11:30 - 13:00 น.)
+                        </td>
+                    </tr>`;
+                }
+
+                visibleRows++;
+                let cellsHtml = "";
+
                 services.forEach(svc => {
-                    const obj = (slot.services && slot.services[svc]) ? slot.services[svc] : { free: 0, total: 0, availableCols: [] };
+                    const obj = (slot.services && slot.services[svc]) ? slot.services[svc] : { free: 0, total: 0 };
+
+                    // 1. พัก / ไม่เปิดรับคิวในรอบเวลานี้
                     if (obj.total === 0) {
-                        cells += `<td class="p-2 text-center"><span class="text-[11px] text-slate-400 font-semibold">พัก</span></td>`;
-                    } else if (obj.free === 0) {
-                        cells += `<td class="p-2 text-center"><span class="inline-block px-2.5 py-1 rounded-full bg-red-50 text-red-500 text-[11px] font-bold">เต็ม</span></td>`;
-                    } else {
-                        const enc = encodeURIComponent(JSON.stringify(obj.availableCols || []));
-                        cells += `
-                        <td class="p-2 text-center">
-                            <button onclick="openBookingModal('${slot.time}', '${svc}', '${enc}')" class="px-3 py-1.5 rounded-full bg-[#e2f1ea] hover:bg-[#68b290] text-[#1e2d26] hover:text-white text-xs font-extrabold transition">
-                                ว่าง ${obj.free}/${obj.total}
+                        cellsHtml += `
+                        <td class="p-1.5 sm:p-2.5 text-center align-middle">
+                            <div class="w-full py-2 sm:py-2.5 px-1 rounded-2xl bg-slate-100/90 text-slate-400 text-[11px] sm:text-xs font-bold select-none">
+                                พัก
+                            </div>
+                        </td>`;
+                    }
+                    // 2. คิวเต็มแล้ว
+                    else if (obj.free === 0) {
+                        cellsHtml += `
+                        <td class="p-1.5 sm:p-2.5 text-center align-middle">
+                            <div class="w-full py-2 sm:py-2.5 px-1 rounded-2xl bg-red-50 text-red-400 border border-red-100 text-[11px] sm:text-xs font-extrabold select-none">
+                                เต็ม
+                            </div>
+                        </td>`;
+                    }
+                    // 3. มีคิวว่าง -> ปุ่มกดจองอัตโนมัติทันที
+                    else {
+                        cellsHtml += `
+                        <td class="p-1.5 sm:p-2.5 text-center align-middle">
+                            <button onclick="openBookingModal('${slot.time}', '${svc}', ${obj.free})"
+                                    class="slot-btn-free w-full py-2 sm:py-2.5 px-1 rounded-2xl text-[11px] sm:text-xs font-extrabold flex flex-col sm:flex-row items-center justify-center sm:gap-1 leading-tight">
+                                <span>ว่าง ${obj.free}</span>
+                                <span class="text-[9px] sm:text-[10px] opacity-85 font-semibold hidden sm:inline">/${obj.total}</span>
                             </button>
                         </td>`;
                     }
                 });
 
+                const endTime = END_TIME_MAP[slot.time] || "";
+
                 rowsHtml += `
-                <tr class="border-b border-slate-100">
-                    <td class="p-3 font-extrabold text-xs text-[#1e2d26] whitespace-nowrap">${slot.time} - ${END_TIME_MAP[slot.time]}</td>
-                    ${cells}
+                <tr class="border-b border-slate-100 hover:bg-[#f4f8f6]/60 transition">
+                    <td class="py-2.5 px-2 sm:px-4 align-middle whitespace-nowrap">
+                        <div class="font-extrabold text-xs sm:text-sm text-[#1e2d26] leading-tight">${slot.time} น.</div>
+                        <div class="text-[10px] text-[#788b82] font-semibold">ถึง ${endTime}</div>
+                    </td>
+                    ${cellsHtml}
                 </tr>`;
             });
 
-            document.getElementById('slots-container').innerHTML = `
-            <div class="overflow-x-auto bg-white rounded-[28px] p-3 border border-slate-100">
-                <table class="w-full text-left border-collapse min-w-[520px]">
+            if (visibleRows === 0) {
+                rowsHtml = `
+                <tr>
+                    <td colspan="5" class="py-12 text-center text-xs font-bold text-[#788b82]">
+                        ไม่มีรอบเวลาที่ว่างตามตัวกรองที่เลือก
+                    </td>
+                </tr>`;
+            }
+
+            document.getElementById('table-overview-container').innerHTML = `
+                <table class="w-full border-collapse table-fixed">
                     <thead>
-                        <tr class="text-[11px] font-extrabold text-[#788b82] border-b border-slate-100">
-                            <th class="p-3">เวลา</th>
-                            <th class="p-3 text-center">นวดตัว</th>
-                            <th class="p-3 text-center">นวดเท้า</th>
-                            <th class="p-3 text-center">พอกเข่า</th>
-                            <th class="p-3 text-center">ฝังเข็ม</th>
+                        <tr class="bg-[#1e2d26] text-white text-[11px] sm:text-xs">
+                            <th class="py-3 px-2 sm:px-4 text-left font-extrabold w-[22%] sm:w-[20%]">รอบเวลา</th>
+                            <th class="py-3 px-1 text-center font-extrabold w-[19.5%] sm:w-[20%]">
+                                <i class="fa-solid fa-spa text-[#68b290] mr-0.5 hidden sm:inline"></i> นวดตัว
+                            </th>
+                            <th class="py-3 px-1 text-center font-extrabold w-[19.5%] sm:w-[20%]">
+                                <i class="fa-solid fa-shoe-prints text-amber-300 mr-0.5 hidden sm:inline"></i> นวดเท้า
+                            </th>
+                            <th class="py-3 px-1 text-center font-extrabold w-[19.5%] sm:w-[20%]">
+                                <i class="fa-solid fa-leaf text-teal-300 mr-0.5 hidden sm:inline"></i> พอกเข่า
+                            </th>
+                            <th class="py-3 px-1 text-center font-extrabold w-[19.5%] sm:w-[20%]">
+                                <i class="fa-solid fa-yin-yang text-rose-300 mr-0.5 hidden sm:inline"></i> ฝังเข็ม
+                            </th>
                         </tr>
                     </thead>
-                    <tbody>${rowsHtml}</tbody>
-                </table>
-            </div>`;
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>`;
         }
 
         // ==========================================
-        // 🎛️ 3. FILTER & DOCK ACTIONS
+        // 🎛️ 3. FILTER CONTROLS
         // ==========================================
-        function setFilterService(svc) {
-            selectedServiceFilter = (selectedServiceFilter === svc && svc !== "ALL") ? "ALL" : svc;
-            renderAll();
-        }
-
         function setFilterPeriod(period) {
             selectedPeriodFilter = period;
-            selectedTimeJump = "ALL";
             ["ALL", "morning", "afternoon"].forEach(p => {
                 const btn = document.getElementById('period-' + p.toLowerCase());
                 if (!btn) return;
                 btn.className = (p === period)
-                    ? "px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-[#1e2d26] shadow-sm transition"
-                    : "px-3 py-1.5 rounded-xl text-xs font-semibold text-[#788b82] hover:text-[#1e2d26] transition";
+                    ? "px-3 py-1 rounded-full text-[11px] font-bold bg-[#1e2d26] text-white shadow-sm transition"
+                    : "px-3 py-1 rounded-full text-[11px] font-semibold text-[#788b82] hover:text-[#1e2d26] transition";
             });
-            renderAll();
-        }
-
-        function setTimeJump(timeStr) {
-            selectedTimeJump = (selectedTimeJump === timeStr && timeStr !== "ALL") ? "ALL" : timeStr;
-            renderAll();
+            renderOverviewTable();
         }
 
         function toggleFreeOnly(checked) {
             showOnlyFree = checked;
-            renderAll();
-        }
-
-        function setViewMode(mode) {
-            currentViewMode = mode;
-            document.getElementById('dock-btn-cards').className = mode === 'cards'
-                ? "px-4 py-2 rounded-full text-xs font-bold bg-[#68b290] text-white transition flex items-center gap-1.5"
-                : "px-4 py-2 rounded-full text-xs font-semibold text-slate-300 hover:text-white transition flex items-center gap-1.5";
-            document.getElementById('dock-btn-matrix').className = mode === 'matrix'
-                ? "px-4 py-2 rounded-full text-xs font-bold bg-[#68b290] text-white transition flex items-center gap-1.5"
-                : "px-4 py-2 rounded-full text-xs font-semibold text-slate-300 hover:text-white transition flex items-center gap-1.5";
-            renderAll();
-        }
-
-        function resetFilters() {
-            selectedServiceFilter = "ALL";
-            selectedPeriodFilter = "ALL";
-            selectedTimeJump = "ALL";
-            showOnlyFree = false;
-            document.getElementById('toggle-free-only').checked = false;
-            setFilterPeriod("ALL");
+            renderOverviewTable();
         }
 
         // ==========================================
-        // 🛒 4. MODAL BOOKING ENGINE
+        // 🛒 4. AUTO-ASSIGN BOOKING ENGINE (col = 0)
         // ==========================================
-        function openBookingModal(timeStr, serviceName, encodedCols) {
-            const availableCols = JSON.parse(decodeURIComponent(encodedCols));
-            activeModalContext = { time: timeStr, service: serviceName, availableCols };
-
+        function openBookingModal(timeStr, serviceName, freeCount) {
+            activeModalContext = { time: timeStr, service: serviceName, freeCount: freeCount };
             const meta = SERVICE_META[serviceName] || SERVICE_META["นวดตัว"];
             const savedUser = JSON.parse(localStorage.getItem('wisdom_last_user') || '{"name":"","tel":""}');
 
             document.getElementById('modal-svc-icon').innerHTML = `<i class="fa-solid ${meta.icon}"></i>`;
             document.getElementById('modal-svc-title').innerText = `บริการ${serviceName}`;
             document.getElementById('modal-time-subtitle').innerText = `รอบเวลา ${timeStr} - ${END_TIME_MAP[timeStr]} น. • 29 ต.ค. 2570`;
-            document.getElementById('modal-free-badge').innerText = `ว่าง ${availableCols.length} คิว`;
+            document.getElementById('modal-free-badge').innerText = `ว่าง ${freeCount} คิว`;
 
             document.getElementById('modal-input-name').value = savedUser.name || '';
             document.getElementById('modal-input-tel').value = savedUser.tel || '';
-            document.getElementById('modal-selected-col').value = '0';
 
-            let chipsHtml = `
-                <button type="button" onclick="selectModalChip(this, 0)" class="col-chip col-span-2 p-2.5 rounded-2xl border-2 border-[#68b290] bg-[#e2f1ea] text-[#1e2d26] text-xs font-extrabold flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-wand-magic-sparkles text-[#4b9473]"></i> จัดช่องบริการว่างให้อัตโนมัติ (แนะนำ)
-                </button>`;
-
-            availableCols.forEach(c => {
-                chipsHtml += `
-                <button type="button" onclick="selectModalChip(this, ${c.col})" class="col-chip p-2.5 rounded-2xl border border-slate-200 bg-[#f4f8f6] text-[#1e2d26] text-xs font-semibold flex items-center gap-2 truncate">
-                    <i class="fa-solid fa-user-Check text-[#68b290]"></i>
-                    <span class="truncate">${c.staff}</span>
-                </button>`;
-            });
-
-            document.getElementById('modal-staff-chips').innerHTML = chipsHtml;
             document.getElementById('booking-modal').classList.remove('hidden');
-        }
-
-        function selectModalChip(btn, col) {
-            document.getElementById('modal-selected-col').value = col;
-            document.querySelectorAll('.col-chip').forEach(el => {
-                el.className = "col-chip p-2.5 rounded-2xl border border-slate-200 bg-[#f4f8f6] text-[#1e2d26] text-xs font-semibold flex items-center gap-2 truncate";
-            });
-            btn.className = (col === 0 ? "col-chip col-span-2 " : "col-chip ") + "p-2.5 rounded-2xl border-2 border-[#68b290] bg-[#e2f1ea] text-[#1e2d26] text-xs font-extrabold flex items-center justify-center gap-1.5 truncate";
+            setTimeout(() => {
+                document.getElementById('modal-input-name').focus();
+            }, 150);
         }
 
         function closeBookingModal() {
@@ -874,7 +573,6 @@
         function confirmModalBooking() {
             const name = document.getElementById('modal-input-name').value.trim();
             const tel = document.getElementById('modal-input-tel').value.trim();
-            const col = parseInt(document.getElementById('modal-selected-col').value, 10) || 0;
 
             if (!name) {
                 Swal.fire({ icon: 'warning', title: 'กรุณาระบุชื่อ', text: 'โปรดกรอกชื่อหรือชื่อเล่นของผู้รับบริการ', confirmButtonColor: '#1e2d26' });
@@ -889,11 +587,12 @@
             closeBookingModal();
 
             Swal.fire({
-                title: 'กำลังบันทึกคิว...',
+                title: 'กำลังจัดคิวว่างให้อัตโนมัติ...',
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading(); }
             });
 
+            // ส่ง col: 0 เพื่อให้ระบบหลังบ้านเลือกช่องบริการที่ว่างให้โดยอัตโนมัติ
             fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -902,7 +601,7 @@
                     service: activeModalContext.service,
                     name: name,
                     tel: tel,
-                    col: col
+                    col: 0
                 })
             })
             .then(r => r.json())
@@ -929,7 +628,7 @@
                     updateMyTicketBadge();
 
                     if (typeof liff !== 'undefined' && liff.isInClient()) {
-                        const msg = `🎫 บัตรคิววันภูมิปัญญาการแพทย์แผนไทยฯ\n📅 29 ตุลาคม 2570\n⏰ เวลา: ${ticketObj.time} - ${ticketObj.endTime} น.\n🌿 บริการ: ${ticketObj.service}\n🛏️ ผู้ให้บริการ: ${ticketObj.staff}\n👤 ชื่อ: คุณ${ticketObj.name} (${ticketObj.tel})`;
+                        const msg = `🎫 บัตรคิววันภูมิปัญญาการแพทย์แผนไทยฯ\n📅 29 ตุลาคม 2570\n⏰ เวลา: ${ticketObj.time} - ${ticketObj.endTime} น.\n🌿 บริการ: ${ticketObj.service}\n👤 ชื่อ: คุณ${ticketObj.name} (${ticketObj.tel})`;
                         liff.sendMessages([{ type: 'text', text: msg }]).catch(() => {});
                     }
 
@@ -944,7 +643,7 @@
                                 </div>
                                 <p class="text-base font-extrabold text-[#1e2d26]">🌿 บริการ${ticketObj.service}</p>
                                 <p class="text-xs font-bold text-[#495a52] mt-1">👤 ผู้รับบริการ: คุณ${ticketObj.name} (${ticketObj.tel})</p>
-                                <p class="text-xs font-bold text-[#4b9473] mt-1">🛏️ ช่องบริการ: ${ticketObj.staff}</p>
+                                <p class="text-[11px] text-[#788b82] mt-2 text-center">*กรุณาแคปหน้าจอนี้ไว้แสดงต่อเจ้าหน้าที่หน้างาน*</p>
                             </div>
                         `,
                         confirmButtonText: 'เรียบร้อย',
@@ -954,14 +653,14 @@
                     fetchFirebaseData(false);
                     Swal.fire({
                         icon: 'info',
-                        title: 'คิวเพิ่งถูกจองเต็ม',
-                        text: res.message || 'กรุณาเลือกรอบเวลาอื่น',
+                        title: 'คิวในรอบนี้เต็มแล้ว',
+                        text: res.message || 'กรุณาเลือกเวลาอื่นที่มีคิวว่างครับ',
                         confirmButtonColor: '#1e2d26'
                     });
                 }
             })
             .catch(() => {
-                Swal.fire({ icon: 'error', title: 'การเชื่อมต่อขัดข้อง', text: 'กรุณาลองใหม่อีกครั้ง', confirmButtonColor: '#1e2d26' });
+                Swal.fire({ icon: 'error', title: 'การเชื่อมต่อขัดข้อง', text: 'กรุณาลองกดยืนยันอีกครั้งครับ', confirmButtonColor: '#1e2d26' });
             });
         }
 
@@ -982,7 +681,7 @@
                 Swal.fire({
                     icon: 'info',
                     title: 'ยังไม่มีบัตรคิวในเครื่องนี้',
-                    text: 'ท่านสามารถแตะเลือกบริการที่ว่างในตารางเพื่อจองคิวได้ทันที',
+                    text: 'แตะปุ่ม "ว่าง" ในตารางเพื่อจองคิวได้ทันทีครับ',
                     confirmButtonColor: '#1e2d26'
                 });
                 return;
@@ -994,16 +693,15 @@
                 <div class="bg-[#f4f8f6] rounded-2xl p-3.5 border border-[#dce9e2]">
                     <div class="flex justify-between items-center mb-1">
                         <span class="bg-[#1e2d26] text-white text-xs font-bold px-2.5 py-0.5 rounded-full">${t.time} - ${t.endTime || END_TIME_MAP[t.time]} น.</span>
-                        <span class="text-xs font-extrabold text-[#4b9473]">${t.service}</span>
+                        <span class="text-xs font-extrabold text-[#4b9473]">บริการ${t.service}</span>
                     </div>
-                    <p class="text-xs font-bold text-[#1e2d26] mt-1">👤 คุณ${t.name} (${t.tel})</p>
-                    <p class="text-[11px] text-[#788b82] mt-0.5">🛏️ ผู้ให้บริการ: ${t.staff}</p>
+                    <p class="text-xs font-bold text-[#1e2d26] mt-1.5">👤 คุณ${t.name} (${t.tel})</p>
                 </div>`;
             });
             html += `</div>`;
 
             Swal.fire({
-                title: '<span class="text-lg font-extrabold text-[#1e2d26]">บัตรคิวของฉัน</span>',
+                title: '<span class="text-lg font-extrabold text-[#1e2d26]">🎫 บัตรคิวของฉัน</span>',
                 html: html,
                 confirmButtonText: 'ปิดหน้าต่าง',
                 confirmButtonColor: '#1e2d26'
